@@ -35,10 +35,10 @@ package
 		}
 		
 		private function init():void
-		{
-			var debugSprite:Sprite = new flash.display.Sprite();
-			Starling.current.nativeOverlay.addChild(debugSprite)
-			debugDrawww(debugSprite);
+		{	
+			//var debugSprite = new flash.display.Sprite();
+			//Starling.current.nativeOverlay.addChild(debugSprite)
+			debugDraw();
 			
 			// ************************ THE FLOOR ************************ //
 			// shape
@@ -188,25 +188,12 @@ package
 			this.stage.addEventListener(KeyboardEvent.KEY_UP, keyReleased);
 		}
 		
-		private function debugDraw():void
-		{
-			var debugSprite:Sprite = new flash.display.Sprite();
-			Starling.current.nativeOverlay.addChild(debugSprite)
-			debugDrawww(debugSprite);
+
 		
-			//var worldDebugDraw:b2DebugDraw = new b2DebugDraw();
-			//addChild(debugSprite);
-			//worldDebugDraw.SetSprite(debugSprite);
-			//worldDebugDraw.SetDrawScale(worldScale);
-			//worldDebugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-			//worldDebugDraw.SetFillAlpha(0.5);
-			//world.SetDebugDraw(worldDebugDraw);
-		}
-		
-		public function debugDrawww(debugSprite:Sprite):void
+		public function debugDraw():void
 		{
 			var debugDraw:b2DebugDraw = new b2DebugDraw();
-			debugDraw.SetSprite(debugSprite);
+			debugDraw.SetSprite(Starling.current.nativeOverlay);
 			debugDraw.SetDrawScale(30);
 			debugDraw.SetLineThickness(1.0);
 			debugDraw.SetAlpha(1);
