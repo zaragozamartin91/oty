@@ -5,7 +5,7 @@ package
 	import starling.core.Starling;
 	
 	import flash.display.Sprite;
-
+	
 	import starling.events.Event;
 	import starling.events.KeyboardEvent;
 	
@@ -30,8 +30,12 @@ package
 		
 		public function Game():void
 		{
-			ExternalInterface.call("console.log", "YourString");
-			
+			super();
+			addEventListener(Event.ADDED_TO_STAGE, init);
+		}
+		
+		private function init():void
+		{
 			var debugSprite:Sprite = new flash.display.Sprite();
 			Starling.current.nativeOverlay.addChild(debugSprite)
 			debugDrawww(debugSprite);
@@ -180,8 +184,8 @@ package
 			rearAxlePrismaticJoint = world.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
 			
 			addEventListener(Event.ENTER_FRAME, updateWorld);
-			addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
-			addEventListener(KeyboardEvent.KEY_UP, keyReleased);
+			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
+			this.stage.addEventListener(KeyboardEvent.KEY_UP, keyReleased);
 		}
 		
 		private function debugDraw():void

@@ -12,6 +12,7 @@ package
         {
             _starling = new Starling(Game, stage);
             _starling.start();
+			trace("hello world");
         }
     }
 }
