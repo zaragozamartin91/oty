@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<TextureAtlas imagePath="penguflip-atlas.png">
+ <SubTexture name="moon" x="194" y="411" width="60" height="55"/>;
+ <SubTexture name="jupiter" x="30" y="0" width="65" height="78"/>;
+</TextureAtlas>

@@ -36,6 +36,7 @@ package
 		
 		private function init():void
 		{	
+			trace("INIT!");
 			//var debugSprite = new flash.display.Sprite();
 			//Starling.current.nativeOverlay.addChild(debugSprite)
 			debugDraw();
@@ -204,13 +205,14 @@ package
 		
 		private function keyPressed(e:KeyboardEvent):void
 		{
-			trace(e.keyCode);
 			switch (e.keyCode)
 			{
 			case 37: 
+				trace("LEFT");
 				left = true;
 				break;
 			case 39: 
+				trace("RIGHT");
 				right = true;
 				break;
 			}
@@ -231,7 +233,6 @@ package
 		
 		private function updateWorld(e:Event):void
 		{
-			trace(e);
 			if (left)
 			{
 				motorSpeed += 0.1;
