@@ -1,7 +1,11 @@
 package
 {
+	import flash.geom.Point;
 	import starling.display.Quad;
 	import starling.display.Sprite;
+	import starling.events.Touch;
+	import starling.events.TouchEvent;
+	import starling.events.TouchPhase;
 	import starling.text.TextField;
 	import starling.textures.TextureAtlas;
 	import starling.utils.Align;
@@ -45,9 +49,10 @@ package
 			//An Image is just a quad with a convenient constructor and a few additional methods
 			var speechBubbleImage:Image = new Image(speechBubbleTexture);
 			var textField:TextField = new TextField(200, 50, "Ay caramba!");
-			textField.format.setTo("Arial", 12, Color.RED);
+			textField.y = speechBubbleImage.height / 4;
+			//Per default, Starling will use system fonts to render text. For example, if you set up your TextField to use "Arial", it will use the one installed on the system
+			textField.format.setTo("Arial", 20, Color.RED);
 			textField.format.horizontalAlign = Align.RIGHT;
-			
 			
 			speechBubbleSprite.addChild(speechBubbleImage);
 			speechBubbleSprite.addChild(textField);
@@ -55,6 +60,7 @@ package
 			speechBubbleSprite.alignPivot();
 			speechBubbleSprite.x = stage.stageWidth / 2;
 			speechBubbleSprite.y = stage.stageHeight / 2;
+			speechBubbleSprite.addEventListener(TouchEvent.TOUCH, onTouch);
 			addChild(speechBubbleSprite);
 			
 			var msgBox:MessageBox = new MessageBox("Really exit?");
@@ -74,7 +80,27 @@ package
 			moonImage.x = stage.stageWidth * 0.75;
 			moonImage.y = stage.stageHeight * 0.75;
 			addChild(moonImage);
+			
+			var dog:Dog = new Dog("shaggy");
+			addChild(dog);
+			dog.bark();
+		}
 		
+		private function onTouch(event:TouchEvent):void
+		{
+			//As first parameter, we passed this to the getTouch method. Thus, we’re asking the the event to return any touches that occurred on on this or its children.
+			var touchBegan:Touch = event.getTouch(this, TouchPhase.BEGAN);
+			if (touchBegan)
+			{
+				var localPos:Point = touchBegan.getLocation(this);
+				trace("Touched object at position: " + localPos);
+			}
+			
+			var touchEnd:Touch = event.getTouch(this, TouchPhase.ENDED);
+			if (touchEnd) {
+				var localPos:Point = touchEnd.getLocation(this);
+				trace("Stopped touching object at position: " + localPos);
+			}
 		}
 	}
 }

@@ -7,6 +7,7 @@ package
 	import starling.textures.Texture;
 	import starling.text.TextField;
 	import starling.events.Event;
+	import starling.utils.Color;
 	
 	/**
 	 * ...
@@ -27,14 +28,22 @@ package
 		
 		public function MessageBox(text:String)
 		{
-			var bitmap:Bitmap = new BackgroundBmp(); 
-			var bgTexture:Texture = Texture.fromBitmap(bitmap); 
+			var bitmap:Bitmap = new BackgroundBmp();
+			var bgTexture:Texture = Texture.fromBitmap(bitmap);
 			var buttonTexture:Texture = Texture.fromEmbeddedAsset(ButtonBmp);
 			
 			_background = new Image(bgTexture);
 			_background.width = 200;
 			_background.height = 200;
-			_textField = new TextField(100, 200, text);
+			
+			_textField = new TextField(120, 20, text);
+			_textField.border = true;
+			_textField.alignPivot();
+			_textField.x = _background.width / 2;
+			_textField.y = _background.height / 2;
+			_textField.format.setTo("Arial", 12, Color.BLUE);
+			
+			
 			_yesButton = new Button(buttonTexture, "yes");
 			_yesButton.width = 50;
 			_yesButton.height = 50;
@@ -53,7 +62,8 @@ package
 			addChild(_noButton);
 			
 			_yesButton.addEventListener(Event.TRIGGERED, cleanUp);
-			_noButton.addEventListener(Event.TRIGGERED, function():void {
+			_noButton.addEventListener(Event.TRIGGERED, function():void
+			{
 				_textField.text = "sure you dont??";
 			});
 		}

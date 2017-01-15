@@ -17,6 +17,9 @@ package
 		
 		public function Main()
 		{
+			/*habilita funcionalidad multitouch*/
+			Starling.multitouchEnabled = true
+			
 			/*
 			 * all parameters:
 			 * rootClass:Class,
@@ -32,6 +35,9 @@ package
 			_starling.addEventListener(Event.ROOT_CREATED, rootCreated);
 			
 			_starling.showStats = true;
+			
+			/*Permite probar la funcionalidad multitouch en pcs de escritorio*/
+			_starling.simulateMultitouch = true;
 			
 			//the skipUnchangedFrames-property. If enabled, static scenes are recognized as such and the back buffer is simply left as it is. 
 			/*it doesn’t work well with Render- and VideoTextures. Changes in those textures simply won’t show up.

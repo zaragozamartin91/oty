@@ -1,10 +1,15 @@
 package
 {
+	import flash.geom.Point;
+	import starling.display.Image;
 	import starling.display.Quad;
+	import starling.display.Sprite;
+	import starling.events.Touch;
+	import starling.events.TouchEvent;
+	import starling.events.TouchPhase;
+	import starling.textures.Texture;
 	import starling.utils.Color;
 	import starling.core.Starling;
-	
-	import flash.display.Sprite;
 	
 	import starling.events.Event;
 	import starling.events.KeyboardEvent;
@@ -28,14 +33,17 @@ package
 		private var frontAxlePrismaticJoint:b2PrismaticJoint;
 		private var rearAxlePrismaticJoint:b2PrismaticJoint;
 		
+		[Embed(source = "forward-button.png")]
+		public static const ForwardButtonBmp:Class;
+		
+		private var moveButtonTexture:Texture;
+		
 		public function Game():void
 		{
-			super();
-			addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
-		private function init():void
-		{	
+		public function start():void
+		{
 			trace("INIT!");
 			//var debugSprite = new flash.display.Sprite();
 			//Starling.current.nativeOverlay.addChild(debugSprite)
@@ -185,11 +193,89 @@ package
 			rearAxlePrismaticJoint = world.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
 			
 			addEventListener(Event.ENTER_FRAME, updateWorld);
+			
+			moveButtonTexture = Texture.fromEmbeddedAsset(ForwardButtonBmp);
+			addForwardButton();
+			addBackButton();
+			
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
 			this.stage.addEventListener(KeyboardEvent.KEY_UP, keyReleased);
 		}
 		
-
+		private function addForwardButton():void
+		{
+			var buttonImg:Image = new Image(moveButtonTexture);
+			var buttonSprite:Sprite = new Sprite();
+			buttonSprite.addChild(buttonImg);
+			buttonSprite.alignPivot();
+			
+			buttonSprite.width = 100;
+			buttonSprite.height = 100;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width;
+			buttonSprite.y = buttonSprite.height / 2;
+			
+			buttonSprite.addEventListener(TouchEvent.TOUCH, onForwardButtonTouch);
+			
+			addChild(buttonSprite);
+		}
+		
+		private function addBackButton():void
+		{
+			var buttonImg:Image = new Image(moveButtonTexture);
+			var buttonSprite:Sprite = new Sprite();
+			buttonSprite.addChild(buttonImg);
+			buttonSprite.alignPivot();
+			buttonSprite.rotation = Math.PI;
+			
+			buttonSprite.width = 100;
+			buttonSprite.height = 100;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width * 2;
+			buttonSprite.y = buttonSprite.height / 2;
+			
+			buttonSprite.addEventListener(TouchEvent.TOUCH, onBackButtonTouch);
+			
+			addChild(buttonSprite);
+		}
+		
+		private function onForwardButtonTouch(event:TouchEvent):void
+		{
+			//As first parameter, we passed this to the getTouch method. Thus, we’re asking the the event to return any touches that occurred on on this or its children.
+			var touchBegan:Touch = event.getTouch(this, TouchPhase.BEGAN);
+			if (touchBegan)
+			{
+				var localPos:Point = touchBegan.getLocation(this);
+				trace("Touched object at position: " + localPos);
+				right = true;
+			}
+			
+			var touchEnd:Touch = event.getTouch(this, TouchPhase.ENDED);
+			if (touchEnd)
+			{
+				var localPos:Point = touchEnd.getLocation(this);
+				trace("Stopped touching object at position: " + localPos);
+				right = false;
+			}
+		}
+		
+		private function onBackButtonTouch(event:TouchEvent):void
+		{
+			//As first parameter, we passed this to the getTouch method. Thus, we’re asking the the event to return any touches that occurred on on this or its children.
+			var touchBegan:Touch = event.getTouch(this, TouchPhase.BEGAN);
+			if (touchBegan)
+			{
+				var localPos:Point = touchBegan.getLocation(this);
+				trace("Touched object at position: " + localPos);
+				left = true;
+			}
+			
+			var touchEnd:Touch = event.getTouch(this, TouchPhase.ENDED);
+			if (touchEnd)
+			{
+				var localPos:Point = touchEnd.getLocation(this);
+				trace("Stopped touching object at position: " + localPos);
+				left = false;
+			}
+		}
 		
 		public function debugDraw():void
 		{
