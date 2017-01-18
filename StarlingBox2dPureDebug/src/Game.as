@@ -44,8 +44,7 @@ package
 		
 		private var rearWheel:b2Body;
 		private var frontWheel:b2Body;
-		private var frontWheelSprite:Sprite;
-		private var rearWheelSprite:Sprite;
+		
 		
 		private var moveButtonTexture:Texture;
 		
@@ -106,7 +105,6 @@ package
 			trunkFixture.restitution = 0.3;
 			trunkFixture.filter.groupIndex = -1;
 			trunkFixture.shape = trunkShape;
-			
 			
 			// ************************ THE HOOD ************************ //
 			// shape
@@ -209,26 +207,7 @@ package
 			addForwardButton();
 			addBackButton();
 			
-			var wheelTexture:Texture = Texture.fromEmbeddedAsset(WheelBmp);
-			var frontWheelImg:Image = new Image(wheelTexture);
-			frontWheelSprite = new Sprite();
-			frontWheelSprite.addChild(frontWheelImg);
-			frontWheelSprite.alignPivot();
-			frontWheelSprite.width = metersToPixels(wheelShape.GetRadius() * 2);
-			frontWheelSprite.height = metersToPixels(wheelShape.GetRadius() * 2);
-			frontWheelSprite.x = 100;
-			frontWheelSprite.y = 100;
-			addChild(frontWheelSprite);
 			
-			var rearWheelImg:Image = new Image(wheelTexture);
-			rearWheelSprite = new Sprite();
-			rearWheelSprite.addChild(rearWheelImg);
-			rearWheelSprite.alignPivot();
-			rearWheelSprite.width = metersToPixels(wheelShape.GetRadius() * 2);
-			rearWheelSprite.height = metersToPixels(wheelShape.GetRadius() * 2);
-			rearWheelSprite.x = 200;
-			rearWheelSprite.y = 200;
-			addChild(rearWheelSprite);
 			
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
 			this.stage.addEventListener(KeyboardEvent.KEY_UP, keyReleased);
@@ -318,7 +297,7 @@ package
 			debugDraw.SetDrawScale(PIXELS_TO_METER);
 			debugDraw.SetLineThickness(1.0);
 			debugDraw.SetAlpha(1);
-			debugDraw.SetFillAlpha(0.4);
+			debugDraw.SetFillAlpha(1);
 			debugDraw.SetFlags(b2DebugDraw.e_shapeBit);
 			//debugDraw.SetDrawScale(50);
 			world.SetDebugDraw(debugDraw);
@@ -368,13 +347,6 @@ package
 				motorSpeed = 100;
 			}
 			
-			frontWheelSprite.x = metersToPixels(frontWheel.GetPosition().x);
-			frontWheelSprite.y = metersToPixels(frontWheel.GetPosition().y);
-			frontWheelSprite.rotation += frontWheel.GetAngularVelocity() * WORLD_STEP;
-			
-			rearWheelSprite.x = metersToPixels(rearWheel.GetPosition().x);
-			rearWheelSprite.y = metersToPixels(rearWheel.GetPosition().y);
-			rearWheelSprite.rotation += rearWheel.GetAngularVelocity() * WORLD_STEP;
 			
 			rearWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
 			frontWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
