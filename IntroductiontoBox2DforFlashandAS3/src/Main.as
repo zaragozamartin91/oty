@@ -20,6 +20,7 @@ package
 	{
 		public var world:b2World;
 		public var wheelBody:b2Body;
+		public var groundBody:b2Body;
 		public var stepTimer:Timer;
 		public var timeStep:Number = 0.025;
 		
@@ -58,7 +59,7 @@ package
 			// creamos un rectangulo como cuerpo estatico para el suelo
 			var groundBodyDef:b2BodyDef = new b2BodyDef();
 			groundBodyDef.position.Set(0, stage.stageHeight);
-			var groundBody:b2Body = world.CreateBody(groundBodyDef);
+			groundBody = world.CreateBody(groundBodyDef);
 			var groundShape:b2PolygonShape = new b2PolygonShape();
 			groundShape.SetAsBox(stage.stageWidth, 1);
 			var groundFixtureDef:b2FixtureDef = new b2FixtureDef();
@@ -102,7 +103,7 @@ package
 			trace(wheelBody.GetPosition().x, wheelBody.GetPosition().y);
 			
 			// se establece una velocidad horizontal iniciala la rueda
-			var startingVelocity:b2Vec2 = new b2Vec2(400, 0);
+			var startingVelocity:b2Vec2 = new b2Vec2(200, 0);
 			wheelBody.SetLinearVelocity(startingVelocity);
 			
 			//I've given the timer a period of 0.025 seconds
@@ -118,7 +119,7 @@ package
 			// Se mueve el lienzo y se dibuja una linea por donde pasa la rueda
 			// se limpia el lienzo
 			graphics.clear();
-			graphics.lineStyle(3, 0xff0000);
+			graphics.lineStyle(30, 0xff0000);
 			world.Step(timeStep, 10, 10);
 			// se dibuja un circulo donde se encuentra la rueda de box2d
 			graphics.drawCircle(wheelBody.GetPosition().x, wheelBody.GetPosition().y, 5);

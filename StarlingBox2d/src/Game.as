@@ -24,6 +24,7 @@ package
 	{
 		private var world:b2World = new b2World(new b2Vec2(0, 10), true);
 		private var worldScale:int = 30;
+		private var worldStep:Number = 1 / 30;
 		private var car:b2Body;
 		private var rearWheelRevoluteJoint:b2RevoluteJoint;
 		private var frontWheelRevoluteJoint:b2RevoluteJoint;
@@ -33,8 +34,16 @@ package
 		private var frontAxlePrismaticJoint:b2PrismaticJoint;
 		private var rearAxlePrismaticJoint:b2PrismaticJoint;
 		
+		private var rearWheel:b2Body;
+		private var frontWheel:b2Body;
+		private var frontWheelSprite:Sprite;
+		private var rearWheelSprite:Sprite;
+		
 		[Embed(source = "forward-button.png")]
 		public static const ForwardButtonBmp:Class;
+		
+		[Embed(source = "wheel.png")]
+		public static const WheelBmp:Class;
 		
 		private var moveButtonTexture:Texture;
 		
@@ -145,6 +154,7 @@ package
 			// ************************ THE WHEELS ************************ //
 			// shape
 			var wheelShape:b2CircleShape = new b2CircleShape(40 / worldScale);
+			trace("wheel radius: " + wheelShape.GetRadius());
 			// fixture
 			var wheelFixture:b2FixtureDef = new b2FixtureDef();
 			wheelFixture.density = 1;
@@ -157,11 +167,11 @@ package
 			wheelBodyDef.type = b2Body.b2_dynamicBody;
 			// the real wheel itself
 			wheelBodyDef.position.Set(car.GetWorldCenter().x - (60 / worldScale), car.GetWorldCenter().y + (65 / worldScale));
-			var rearWheel:b2Body = world.CreateBody(wheelBodyDef);
+			rearWheel = world.CreateBody(wheelBodyDef);
 			rearWheel.CreateFixture(wheelFixture);
 			// the front wheel itself
 			wheelBodyDef.position.Set(car.GetWorldCenter().x + (75 / worldScale), car.GetWorldCenter().y + (65 / worldScale));
-			var frontWheel:b2Body = world.CreateBody(wheelBodyDef);
+			frontWheel = world.CreateBody(wheelBodyDef);
 			frontWheel.CreateFixture(wheelFixture);
 			
 			// ************************ REVOLUTE JOINTS ************************ //
@@ -192,14 +202,35 @@ package
 			axlePrismaticJointDef.Initialize(car, rearAxle, rearAxle.GetWorldCenter(), new b2Vec2(0, 1));
 			rearAxlePrismaticJoint = world.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
 			
-			addEventListener(Event.ENTER_FRAME, updateWorld);
-			
 			moveButtonTexture = Texture.fromEmbeddedAsset(ForwardButtonBmp);
 			addForwardButton();
 			addBackButton();
 			
+			var wheelTexture:Texture = Texture.fromEmbeddedAsset(WheelBmp);
+			var frontWheelImg:Image = new Image(wheelTexture);
+			frontWheelSprite = new Sprite();
+			frontWheelSprite.addChild(frontWheelImg);
+			frontWheelSprite.alignPivot();
+			frontWheelSprite.width =  metersToPixels(wheelShape.GetRadius() * 2);
+			frontWheelSprite.height = metersToPixels(wheelShape.GetRadius() * 2);
+			frontWheelSprite.x = 100;
+			frontWheelSprite.y = 100;
+			addChild(frontWheelSprite);
+			
+			var rearWheelImg:Image = new Image(wheelTexture);
+			rearWheelSprite = new Sprite();
+			rearWheelSprite.addChild(rearWheelImg);
+			rearWheelSprite.alignPivot();
+			rearWheelSprite.width = metersToPixels(wheelShape.GetRadius() * 2);
+			rearWheelSprite.height = metersToPixels(wheelShape.GetRadius() * 2);
+			rearWheelSprite.x = 200;
+			rearWheelSprite.y = 200;
+			addChild(rearWheelSprite);
+			
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
 			this.stage.addEventListener(KeyboardEvent.KEY_UP, keyReleased);
+			
+			addEventListener(Event.ENTER_FRAME, updateWorld);
 		}
 		
 		private function addForwardButton():void
@@ -281,11 +312,12 @@ package
 		{
 			var debugDraw:b2DebugDraw = new b2DebugDraw();
 			debugDraw.SetSprite(Starling.current.nativeOverlay);
-			debugDraw.SetDrawScale(30);
+			debugDraw.SetDrawScale(worldScale);
 			debugDraw.SetLineThickness(1.0);
 			debugDraw.SetAlpha(1);
 			debugDraw.SetFillAlpha(0.4);
 			debugDraw.SetFlags(b2DebugDraw.e_shapeBit);
+			//debugDraw.SetDrawScale(50);
 			world.SetDebugDraw(debugDraw);
 		}
 		
@@ -332,15 +364,28 @@ package
 			{
 				motorSpeed = 100;
 			}
+			
+			frontWheelSprite.x = metersToPixels(frontWheel.GetPosition().x);
+			frontWheelSprite.y = metersToPixels(frontWheel.GetPosition().y);
+			frontWheelSprite.rotation += frontWheel.GetAngularVelocity() * worldStep;
+			
+			rearWheelSprite.x = metersToPixels(rearWheel.GetPosition().x);
+			rearWheelSprite.y = metersToPixels(rearWheel.GetPosition().y);
+			rearWheelSprite.rotation += rearWheel.GetAngularVelocity() * worldStep;
+			
 			rearWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
 			frontWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
 			frontAxlePrismaticJoint.SetMaxMotorForce(Math.abs(600 * frontAxlePrismaticJoint.GetJointTranslation()));
 			frontAxlePrismaticJoint.SetMotorSpeed((frontAxlePrismaticJoint.GetMotorSpeed() - 2 * frontAxlePrismaticJoint.GetJointTranslation()));
 			rearAxlePrismaticJoint.SetMaxMotorForce(Math.abs(600 * rearAxlePrismaticJoint.GetJointTranslation()));
 			rearAxlePrismaticJoint.SetMotorSpeed((rearAxlePrismaticJoint.GetMotorSpeed() - 2 * rearAxlePrismaticJoint.GetJointTranslation()));
-			world.Step(1 / 30, 10, 10);
+			world.Step(worldStep, 10, 10);
 			world.ClearForces();
 			world.DrawDebugData();
+		}
+		
+		private function metersToPixels(m:Number):Number {
+			return m * worldScale;
 		}
 	}
 
