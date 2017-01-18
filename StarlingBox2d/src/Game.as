@@ -22,9 +22,16 @@ package
 	
 	public class Game extends starling.display.Sprite
 	{
+		[Embed(source = "forward-button.png")]
+		public static const ForwardButtonBmp:Class;
+		
+		[Embed(source = "wheel.png")]
+		public static const WheelBmp:Class;
+		
+		public static const PIXELS_TO_METER:int = 30;
+		public static const WORLD_STEP:Number = 1 / 30;
+		
 		private var world:b2World = new b2World(new b2Vec2(0, 10), true);
-		private var worldScale:int = 30;
-		private var worldStep:Number = 1 / 30;
 		
 		private var car:b2Body;
 		private var rearWheelRevoluteJoint:b2RevoluteJoint;
@@ -39,12 +46,6 @@ package
 		private var frontWheel:b2Body;
 		private var frontWheelSprite:Sprite;
 		private var rearWheelSprite:Sprite;
-		
-		[Embed(source = "forward-button.png")]
-		public static const ForwardButtonBmp:Class;
-		
-		[Embed(source = "wheel.png")]
-		public static const WheelBmp:Class;
 		
 		private var moveButtonTexture:Texture;
 		
@@ -313,7 +314,7 @@ package
 		{
 			var debugDraw:b2DebugDraw = new b2DebugDraw();
 			debugDraw.SetSprite(Starling.current.nativeOverlay);
-			debugDraw.SetDrawScale(worldScale);
+			debugDraw.SetDrawScale(PIXELS_TO_METER);
 			debugDraw.SetLineThickness(1.0);
 			debugDraw.SetAlpha(1);
 			debugDraw.SetFillAlpha(0.4);
@@ -368,11 +369,11 @@ package
 			
 			frontWheelSprite.x = metersToPixels(frontWheel.GetPosition().x);
 			frontWheelSprite.y = metersToPixels(frontWheel.GetPosition().y);
-			frontWheelSprite.rotation += frontWheel.GetAngularVelocity() * worldStep;
+			frontWheelSprite.rotation += frontWheel.GetAngularVelocity() * WORLD_STEP;
 			
 			rearWheelSprite.x = metersToPixels(rearWheel.GetPosition().x);
 			rearWheelSprite.y = metersToPixels(rearWheel.GetPosition().y);
-			rearWheelSprite.rotation += rearWheel.GetAngularVelocity() * worldStep;
+			rearWheelSprite.rotation += rearWheel.GetAngularVelocity() * WORLD_STEP;
 			
 			rearWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
 			frontWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
@@ -380,19 +381,19 @@ package
 			frontAxlePrismaticJoint.SetMotorSpeed((frontAxlePrismaticJoint.GetMotorSpeed() - 2 * frontAxlePrismaticJoint.GetJointTranslation()));
 			rearAxlePrismaticJoint.SetMaxMotorForce(Math.abs(600 * rearAxlePrismaticJoint.GetJointTranslation()));
 			rearAxlePrismaticJoint.SetMotorSpeed((rearAxlePrismaticJoint.GetMotorSpeed() - 2 * rearAxlePrismaticJoint.GetJointTranslation()));
-			world.Step(worldStep, 10, 10);
+			world.Step(WORLD_STEP, 10, 10);
 			world.ClearForces();
 			world.DrawDebugData();
 		}
 		
-		private function metersToPixels(m:Number):Number
+		public static function metersToPixels(m:Number):Number
 		{
-			return m * worldScale;
+			return m * PIXELS_TO_METER;
 		}
 		
-		private function pixelsToMeters(p:Number):Number
+		public static function pixelsToMeters(p:Number):Number
 		{
-			return p / worldScale;
+			return p / PIXELS_TO_METER;
 		}
 	}
 
