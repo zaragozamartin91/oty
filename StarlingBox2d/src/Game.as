@@ -25,6 +25,7 @@ package
 		private var world:b2World = new b2World(new b2Vec2(0, 10), true);
 		private var worldScale:int = 30;
 		private var worldStep:Number = 1 / 30;
+		
 		private var car:b2Body;
 		private var rearWheelRevoluteJoint:b2RevoluteJoint;
 		private var frontWheelRevoluteJoint:b2RevoluteJoint;
@@ -61,7 +62,7 @@ package
 			// ************************ THE FLOOR ************************ //
 			// shape
 			var floorShape:b2PolygonShape = new b2PolygonShape();
-			floorShape.SetAsBox(640 / worldScale, 10 / worldScale);
+			floorShape.SetAsBox(pixelsToMeters(640), pixelsToMeters(10));
 			// fixture
 			var floorFixture:b2FixtureDef = new b2FixtureDef();
 			floorFixture.density = 0;
@@ -70,7 +71,7 @@ package
 			floorFixture.shape = floorShape;
 			// body definition
 			var floorBodyDef:b2BodyDef = new b2BodyDef();
-			floorBodyDef.position.Set(320 / worldScale, 480 / worldScale);
+			floorBodyDef.position.Set(pixelsToMeters(320), pixelsToMeters(480));
 			// the floor itself
 			var floor:b2Body = world.CreateBody(floorBodyDef);
 			floor.CreateFixture(floorFixture);
@@ -78,7 +79,7 @@ package
 			// ************************ THE CAR ************************ //
 			// shape
 			var carShape:b2PolygonShape = new b2PolygonShape();
-			carShape.SetAsBox(120 / worldScale, 20 / worldScale);
+			carShape.SetAsBox(pixelsToMeters(120), pixelsToMeters(20));
 			// fixture
 			var carFixture:b2FixtureDef = new b2FixtureDef();
 			carFixture.density = 5;
@@ -89,14 +90,14 @@ package
 			// body definition
 			var carBodyDef:b2BodyDef = new b2BodyDef();
 			carBodyDef.type = b2Body.b2_dynamicBody;
-			carBodyDef.position.Set(320 / worldScale, 100 / worldScale);
+			carBodyDef.position.Set(pixelsToMeters(320), pixelsToMeters(100));
 			
 			// ************************ THE TRUNK ************************ //
 			// shape
 			var trunkShape:b2PolygonShape = new b2PolygonShape();
 			// posicion central del baul
-			var trunkCenter:b2Vec2 = new b2Vec2(-80 / worldScale, -60 / worldScale);
-			trunkShape.SetAsOrientedBox(40 / worldScale, 40 / worldScale, trunkCenter);
+			var trunkCenter:b2Vec2 = new b2Vec2(pixelsToMeters(-80), pixelsToMeters(-60));
+			trunkShape.SetAsOrientedBox(pixelsToMeters(40), pixelsToMeters(40), trunkCenter);
 			// fixture
 			var trunkFixture:b2FixtureDef = new b2FixtureDef();
 			trunkFixture.density = 1;
@@ -109,9 +110,9 @@ package
 			// shape
 			var hoodShape:b2PolygonShape = new b2PolygonShape();
 			var carVector:Vector.<b2Vec2> = new Vector.<b2Vec2>();
-			carVector[0] = new b2Vec2(-40 / worldScale, -20 / worldScale);
-			carVector[1] = new b2Vec2(-40 / worldScale, -100 / worldScale);
-			carVector[2] = new b2Vec2(120 / worldScale, -20 / worldScale);
+			carVector[0] = new b2Vec2(pixelsToMeters(-40), pixelsToMeters(-20));
+			carVector[1] = new b2Vec2(pixelsToMeters(-40), pixelsToMeters(-100));
+			carVector[2] = new b2Vec2(pixelsToMeters(120), pixelsToMeters(-20));
 			hoodShape.SetAsVector(carVector, 3);
 			// fixture
 			var hoodFixture:b2FixtureDef = new b2FixtureDef();
@@ -131,7 +132,7 @@ package
 			// ************************ THE AXLES ************************ //
 			// shape
 			var axleShape:b2PolygonShape = new b2PolygonShape();
-			axleShape.SetAsBox(20 / worldScale, 20 / worldScale);
+			axleShape.SetAsBox(pixelsToMeters(20), pixelsToMeters(20));
 			// fixture
 			var axleFixture:b2FixtureDef = new b2FixtureDef();
 			axleFixture.density = 0.5;
@@ -143,17 +144,17 @@ package
 			var axleBodyDef:b2BodyDef = new b2BodyDef();
 			axleBodyDef.type = b2Body.b2_dynamicBody;
 			// the rear axle itself
-			axleBodyDef.position.Set(car.GetWorldCenter().x - (60 / worldScale), car.GetWorldCenter().y + (65 / worldScale));
+			axleBodyDef.position.Set(car.GetWorldCenter().x - pixelsToMeters(60), car.GetWorldCenter().y + pixelsToMeters(65));
 			var rearAxle:b2Body = world.CreateBody(axleBodyDef);
 			rearAxle.CreateFixture(axleFixture);
 			// the front axle itself
-			axleBodyDef.position.Set(car.GetWorldCenter().x + (75 / worldScale), car.GetWorldCenter().y + (65 / worldScale));
+			axleBodyDef.position.Set(car.GetWorldCenter().x + pixelsToMeters(75), car.GetWorldCenter().y + pixelsToMeters(65));
 			var frontAxle:b2Body = world.CreateBody(axleBodyDef);
 			frontAxle.CreateFixture(axleFixture);
 			
 			// ************************ THE WHEELS ************************ //
 			// shape
-			var wheelShape:b2CircleShape = new b2CircleShape(40 / worldScale);
+			var wheelShape:b2CircleShape = new b2CircleShape(pixelsToMeters(40));
 			trace("wheel radius: " + wheelShape.GetRadius());
 			// fixture
 			var wheelFixture:b2FixtureDef = new b2FixtureDef();
@@ -166,11 +167,11 @@ package
 			var wheelBodyDef:b2BodyDef = new b2BodyDef();
 			wheelBodyDef.type = b2Body.b2_dynamicBody;
 			// the real wheel itself
-			wheelBodyDef.position.Set(car.GetWorldCenter().x - (60 / worldScale), car.GetWorldCenter().y + (65 / worldScale));
+			wheelBodyDef.position.Set(car.GetWorldCenter().x - pixelsToMeters(60), car.GetWorldCenter().y + pixelsToMeters(65));
 			rearWheel = world.CreateBody(wheelBodyDef);
 			rearWheel.CreateFixture(wheelFixture);
 			// the front wheel itself
-			wheelBodyDef.position.Set(car.GetWorldCenter().x + (75 / worldScale), car.GetWorldCenter().y + (65 / worldScale));
+			wheelBodyDef.position.Set(car.GetWorldCenter().x + pixelsToMeters(75), car.GetWorldCenter().y + pixelsToMeters(65));
 			frontWheel = world.CreateBody(wheelBodyDef);
 			frontWheel.CreateFixture(wheelFixture);
 			
@@ -191,8 +192,8 @@ package
 			// ************************ PRISMATIC JOINTS ************************ //
 			//  definition
 			var axlePrismaticJointDef:b2PrismaticJointDef = new b2PrismaticJointDef();
-			axlePrismaticJointDef.lowerTranslation = -20 / worldScale;
-			axlePrismaticJointDef.upperTranslation = 5 / worldScale;
+			axlePrismaticJointDef.lowerTranslation = pixelsToMeters(-20);
+			axlePrismaticJointDef.upperTranslation = pixelsToMeters(5);
 			axlePrismaticJointDef.enableLimit = true;
 			axlePrismaticJointDef.enableMotor = true;
 			// front axle
@@ -211,7 +212,7 @@ package
 			frontWheelSprite = new Sprite();
 			frontWheelSprite.addChild(frontWheelImg);
 			frontWheelSprite.alignPivot();
-			frontWheelSprite.width =  metersToPixels(wheelShape.GetRadius() * 2);
+			frontWheelSprite.width = metersToPixels(wheelShape.GetRadius() * 2);
 			frontWheelSprite.height = metersToPixels(wheelShape.GetRadius() * 2);
 			frontWheelSprite.x = 100;
 			frontWheelSprite.y = 100;
@@ -384,8 +385,14 @@ package
 			world.DrawDebugData();
 		}
 		
-		private function metersToPixels(m:Number):Number {
+		private function metersToPixels(m:Number):Number
+		{
 			return m * worldScale;
+		}
+		
+		private function pixelsToMeters(p:Number):Number
+		{
+			return p / worldScale;
 		}
 	}
 
