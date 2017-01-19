@@ -17,8 +17,8 @@
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="src" />
-    <class path="C:\starling-2.1\starling\src" />
-    <class path="C:\Box2DFlashAS3_2.1a\Source" />
+    <class path="D:\starling-2.1\starling\src" />
+    <class path="D:\Box2DFlashAS3_2.1a\Source" />
   </classpaths>
   <!-- Build options -->
   <build>

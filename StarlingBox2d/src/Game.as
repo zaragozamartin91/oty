@@ -28,6 +28,9 @@ package
 		[Embed(source = "wheel.png")]
 		public static const WheelBmp:Class;
 		
+		[Embed(source="car.png")]
+		public static const CarBmp:Class;
+		
 		public static const PIXELS_TO_METER:int = 30;
 		public static const WORLD_STEP:Number = 1 / 30;
 		
@@ -40,14 +43,18 @@ package
 		private var right:Boolean = false;
 		private var motorSpeed:Number = 0;
 		private var frontAxlePrismaticJoint:b2PrismaticJoint;
-		private var rearAxlePrismaticJoint:b2PrismaticJoint;
-		
+		private var rearAxlePrismaticJoint:b2PrismaticJoint;	
 		private var rearWheel:b2Body;
 		private var frontWheel:b2Body;
+		
 		private var frontWheelSprite:Sprite;
 		private var rearWheelSprite:Sprite;
-		
+		private var carSprite:Sprite;
 		private var moveButtonTexture:Texture;
+		
+		private var carWidthPx:Number = 240;
+		private var carHeightPx:Number = 120;
+		private var carBaseHeightPx:Number = 40;
 		
 		public function Game():void
 		{
@@ -80,7 +87,7 @@ package
 			// ************************ THE CAR ************************ //
 			// shape
 			var carShape:b2PolygonShape = new b2PolygonShape();
-			carShape.SetAsBox(pixelsToMeters(120), pixelsToMeters(20));
+			carShape.SetAsBox(pixelsToMeters(carWidthPx/2), pixelsToMeters(carBaseHeightPx/2));
 			// fixture
 			var carFixture:b2FixtureDef = new b2FixtureDef();
 			carFixture.density = 5;
@@ -216,8 +223,6 @@ package
 			frontWheelSprite.alignPivot();
 			frontWheelSprite.width = metersToPixels(wheelShape.GetRadius() * 2);
 			frontWheelSprite.height = metersToPixels(wheelShape.GetRadius() * 2);
-			frontWheelSprite.x = 100;
-			frontWheelSprite.y = 100;
 			addChild(frontWheelSprite);
 			
 			var rearWheelImg:Image = new Image(wheelTexture);
@@ -226,9 +231,16 @@ package
 			rearWheelSprite.alignPivot();
 			rearWheelSprite.width = metersToPixels(wheelShape.GetRadius() * 2);
 			rearWheelSprite.height = metersToPixels(wheelShape.GetRadius() * 2);
-			rearWheelSprite.x = 200;
-			rearWheelSprite.y = 200;
 			addChild(rearWheelSprite);
+			
+			var carTexture:Texture = Texture.fromEmbeddedAsset(CarBmp);
+			var carImg:Image = new Image(carTexture);
+			carSprite = new Sprite();
+			carSprite.width = metersToPixels(carWidthPx);
+			carSprite.height = metersToPixels(carHeightPx);
+			carSprite.addChild(carImg);
+			carSprite.alignPivot();
+			addChild(carSprite);
 			
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
 			this.stage.addEventListener(KeyboardEvent.KEY_UP, keyReleased);
@@ -375,6 +387,11 @@ package
 			rearWheelSprite.x = metersToPixels(rearWheel.GetPosition().x);
 			rearWheelSprite.y = metersToPixels(rearWheel.GetPosition().y);
 			rearWheelSprite.rotation += rearWheel.GetAngularVelocity() * WORLD_STEP;
+			
+			carSprite.x = metersToPixels(car.GetPosition().x);
+			carSprite.y = metersToPixels(car.GetPosition().y) - carBaseHeightPx;
+			carSprite.rotation = car.GetAngle();
+			
 			
 			rearWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
 			frontWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
