@@ -41,6 +41,7 @@ package
 		private var world:b2World = new b2World(new b2Vec2(0, 10), true);
 		
 		private var car:b2Body;
+		private var carBodyDef:b2BodyDef;
 		private var rearWheelRevoluteJoint:b2RevoluteJoint;
 		private var frontWheelRevoluteJoint:b2RevoluteJoint;
 		private var left:Boolean = false;
@@ -100,7 +101,7 @@ package
 			carFixture.filter.groupIndex = -1;
 			carFixture.shape = carShape;
 			// body definition
-			var carBodyDef:b2BodyDef = new b2BodyDef();
+			carBodyDef = new b2BodyDef();
 			carBodyDef.type = b2Body.b2_dynamicBody;
 			carBodyDef.position.Set(pixelsToMeters(320), pixelsToMeters(100));
 			
@@ -258,8 +259,8 @@ package
 			var otyTween:Tween = new Tween(otySprite, 2);
 			otyTween.animate("scale", 0.5);
 			otyTween.animate("alpha", 0.5);
+			otyTween.animate("rotation", Math.PI * 2);
 			Starling.juggler.add(otyTween);
-			
 			
 			/* LISTENERS ----------------------------------------------------------------------------------------------------- */
 			
@@ -276,9 +277,9 @@ package
 			buttonSprite.addChild(buttonImg);
 			buttonSprite.alignPivot();
 			
-			buttonSprite.width = 100;
-			buttonSprite.height = 100;
-			buttonSprite.x = stage.stageWidth - buttonSprite.width;
+			buttonSprite.width = stage.stageWidth * 0.15;
+			buttonSprite.height = stage.stageWidth * 0.15;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width / 2;
 			buttonSprite.y = buttonSprite.height / 2;
 			
 			buttonSprite.addEventListener(TouchEvent.TOUCH, onForwardButtonTouch);
@@ -294,9 +295,9 @@ package
 			buttonSprite.alignPivot();
 			buttonSprite.rotation = Math.PI;
 			
-			buttonSprite.width = 100;
-			buttonSprite.height = 100;
-			buttonSprite.x = stage.stageWidth - buttonSprite.width * 2;
+			buttonSprite.width = stage.stageWidth * 0.15;
+			buttonSprite.height = stage.stageWidth * 0.15;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width * 1.25;
 			buttonSprite.y = buttonSprite.height / 2;
 			
 			buttonSprite.addEventListener(TouchEvent.TOUCH, onBackButtonTouch);
@@ -410,8 +411,10 @@ package
 			rearWheelSprite.y = metersToPixels(rearWheel.GetPosition().y);
 			rearWheelSprite.rotation = rearWheel.GetAngle();
 			
-			carSprite.x = metersToPixels(car.GetPosition().x);
-			carSprite.y = metersToPixels(car.GetPosition().y) - carBaseHeightPx;
+			/* debido a que "car" representa el cuerpo de la BASE del auto, la posicion del sprite del dibujo (que representa el cuerpo completo del auto) debe desplazarse teniendo en cuenta la rotacion de la base. 
+			 * El desplazamiento siempre es en base a la altura de la base del auto.*/
+			carSprite.x = metersToPixels(car.GetPosition().x) + Math.sin(car.GetAngle()) * carBaseHeightPx;
+			carSprite.y = metersToPixels(car.GetPosition().y) - Math.cos(car.GetAngle()) * carBaseHeightPx;
 			carSprite.rotation = car.GetAngle();
 			
 			rearWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
