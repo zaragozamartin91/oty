@@ -1,6 +1,7 @@
 package
 {
 	import flash.geom.Point;
+	import starling.animation.Tween;
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
@@ -28,8 +29,11 @@ package
 		[Embed(source = "wheel.png")]
 		public static const WheelBmp:Class;
 		
-		[Embed(source="car.png")]
+		[Embed(source = "car.png")]
 		public static const CarBmp:Class;
+		
+		[Embed(source = "oty.png")]
+		public static const OtyBmp:Class;
 		
 		public static const PIXELS_TO_METER:int = 30;
 		public static const WORLD_STEP:Number = 1 / 30;
@@ -43,7 +47,7 @@ package
 		private var right:Boolean = false;
 		private var motorSpeed:Number = 0;
 		private var frontAxlePrismaticJoint:b2PrismaticJoint;
-		private var rearAxlePrismaticJoint:b2PrismaticJoint;	
+		private var rearAxlePrismaticJoint:b2PrismaticJoint;
 		private var rearWheel:b2Body;
 		private var frontWheel:b2Body;
 		
@@ -87,7 +91,7 @@ package
 			// ************************ THE CAR ************************ //
 			// shape
 			var carShape:b2PolygonShape = new b2PolygonShape();
-			carShape.SetAsBox(pixelsToMeters(carWidthPx/2), pixelsToMeters(carBaseHeightPx/2));
+			carShape.SetAsBox(pixelsToMeters(carWidthPx / 2), pixelsToMeters(carBaseHeightPx / 2));
 			// fixture
 			var carFixture:b2FixtureDef = new b2FixtureDef();
 			carFixture.density = 5;
@@ -113,7 +117,6 @@ package
 			trunkFixture.restitution = 0.3;
 			trunkFixture.filter.groupIndex = -1;
 			trunkFixture.shape = trunkShape;
-			
 			
 			// ************************ THE HOOD ************************ //
 			// shape
@@ -212,6 +215,8 @@ package
 			axlePrismaticJointDef.Initialize(car, rearAxle, rearAxle.GetWorldCenter(), new b2Vec2(0, 1));
 			rearAxlePrismaticJoint = world.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
 			
+			/* SPRITES ----------------------------------------------------------------------------------------------------- */
+			
 			moveButtonTexture = Texture.fromEmbeddedAsset(ForwardButtonBmp);
 			addForwardButton();
 			addBackButton();
@@ -241,6 +246,22 @@ package
 			carSprite.addChild(carImg);
 			carSprite.alignPivot();
 			addChild(carSprite);
+			
+			var otyTexture:Texture = Texture.fromEmbeddedAsset(OtyBmp);
+			var otySprite:Sprite = new Sprite();
+			otySprite.addChild(new Image(otyTexture));
+			otySprite.scale = 0.2;
+			otySprite.alignPivot();
+			otySprite.x = stage.stageWidth / 2;
+			otySprite.y = stage.stageHeight * 0.25;
+			addChild(otySprite);
+			var otyTween:Tween = new Tween(otySprite, 2);
+			otyTween.animate("scale", 0.5);
+			otyTween.animate("alpha", 0.5);
+			Starling.juggler.add(otyTween);
+			
+			
+			/* LISTENERS ----------------------------------------------------------------------------------------------------- */
 			
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
 			this.stage.addEventListener(KeyboardEvent.KEY_UP, keyReleased);
@@ -364,6 +385,7 @@ package
 			}
 		}
 		
+		// este metodo sera invocado en cada frame
 		private function updateWorld(e:Event):void
 		{
 			if (left)
@@ -391,7 +413,6 @@ package
 			carSprite.x = metersToPixels(car.GetPosition().x);
 			carSprite.y = metersToPixels(car.GetPosition().y) - carBaseHeightPx;
 			carSprite.rotation = car.GetAngle();
-			
 			
 			rearWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
 			frontWheelRevoluteJoint.SetMotorSpeed(motorSpeed);

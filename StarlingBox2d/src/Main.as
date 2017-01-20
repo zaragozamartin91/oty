@@ -4,7 +4,7 @@ package
 	import starling.core.Starling;
 	import starling.events.Event;
 	
-	[SWF(width = "800", height = "600", frameRate = "60", backgroundColor = "#808080")]
+	[SWF(width = "800", height = "600", frameRate = "60", backgroundColor = "#ffffff")]
 	public class Main extends Sprite
 	{
 		private var _starling:Starling;
