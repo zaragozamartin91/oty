@@ -254,7 +254,7 @@ package
 			otySprite.scale = 0.2;
 			otySprite.alignPivot();
 			otySprite.x = stage.stageWidth / 2;
-			otySprite.y = stage.stageHeight * 0.25;
+			otySprite.y = stage.stageHeight * 0.45;
 			addChild(otySprite);
 			var otyTween:Tween = new Tween(otySprite, 2);
 			otyTween.animate("scale", 0.5);
@@ -275,12 +275,11 @@ package
 			var buttonImg:Image = new Image(moveButtonTexture);
 			var buttonSprite:Sprite = new Sprite();
 			buttonSprite.addChild(buttonImg);
-			buttonSprite.alignPivot();
 			
 			buttonSprite.width = stage.stageWidth * 0.15;
 			buttonSprite.height = stage.stageWidth * 0.15;
-			buttonSprite.x = stage.stageWidth - buttonSprite.width / 2;
-			buttonSprite.y = buttonSprite.height / 2;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width;
+			buttonSprite.y = 0;
 			
 			buttonSprite.addEventListener(TouchEvent.TOUCH, onForwardButtonTouch);
 			
@@ -292,13 +291,13 @@ package
 			var buttonImg:Image = new Image(moveButtonTexture);
 			var buttonSprite:Sprite = new Sprite();
 			buttonSprite.addChild(buttonImg);
-			buttonSprite.alignPivot();
 			buttonSprite.rotation = Math.PI;
 			
 			buttonSprite.width = stage.stageWidth * 0.15;
 			buttonSprite.height = stage.stageWidth * 0.15;
-			buttonSprite.x = stage.stageWidth - buttonSprite.width * 1.25;
-			buttonSprite.y = buttonSprite.height / 2;
+			/* la separacion es de buttonSprite.width * 1.1 debido a que la rotacion de 180° provoca un "desplazamiento" del boton a la izquierda. */
+			buttonSprite.x = stage.stageWidth - buttonSprite.width * 1.1;
+			buttonSprite.y = buttonSprite.height;
 			
 			buttonSprite.addEventListener(TouchEvent.TOUCH, onBackButtonTouch);
 			
@@ -311,16 +310,16 @@ package
 			var touchBegan:Touch = event.getTouch(this, TouchPhase.BEGAN);
 			if (touchBegan)
 			{
-				var localPos:Point = touchBegan.getLocation(this);
-				trace("Touched object at position: " + localPos);
+				var touchPosStart:Point = touchBegan.getLocation(this);
+				trace("Touched object at position: " + touchPosStart);
 				right = true;
 			}
 			
 			var touchEnd:Touch = event.getTouch(this, TouchPhase.ENDED);
 			if (touchEnd)
 			{
-				var localPos:Point = touchEnd.getLocation(this);
-				trace("Stopped touching object at position: " + localPos);
+				var touchPosEnd:Point = touchEnd.getLocation(this);
+				trace("Stopped touching object at position: " + touchPosEnd);
 				right = false;
 			}
 		}
