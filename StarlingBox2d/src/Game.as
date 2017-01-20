@@ -70,7 +70,7 @@ package
 			// ************************ THE FLOOR ************************ //
 			// shape
 			var floorShape:b2PolygonShape = new b2PolygonShape();
-			floorShape.SetAsBox(pixelsToMeters(640), pixelsToMeters(10));
+			floorShape.SetAsBox(pixelsToMeters(stage.stageWidth) / 2, pixelsToMeters(10));
 			// fixture
 			var floorFixture:b2FixtureDef = new b2FixtureDef();
 			floorFixture.density = 0;
@@ -79,7 +79,7 @@ package
 			floorFixture.shape = floorShape;
 			// body definition
 			var floorBodyDef:b2BodyDef = new b2BodyDef();
-			floorBodyDef.position.Set(pixelsToMeters(320), pixelsToMeters(480));
+			floorBodyDef.position.Set(pixelsToMeters(stage.stageWidth) / 2, pixelsToMeters(stage.stageHeight));
 			// the floor itself
 			var floor:b2Body = world.CreateBody(floorBodyDef);
 			floor.CreateFixture(floorFixture);
@@ -309,16 +309,16 @@ package
 			var touchBegan:Touch = event.getTouch(this, TouchPhase.BEGAN);
 			if (touchBegan)
 			{
-				var localPos:Point = touchBegan.getLocation(this);
-				trace("Touched object at position: " + localPos);
+				var touchPosStart:Point = touchBegan.getLocation(this);
+				trace("Touched object at position: " + touchPosStart);
 				left = true;
 			}
 			
 			var touchEnd:Touch = event.getTouch(this, TouchPhase.ENDED);
 			if (touchEnd)
 			{
-				var localPos:Point = touchEnd.getLocation(this);
-				trace("Stopped touching object at position: " + localPos);
+				var touchPosEnd:Point = touchEnd.getLocation(this);
+				trace("Stopped touching object at position: " + touchPosEnd);
 				left = false;
 			}
 		}
@@ -382,11 +382,11 @@ package
 			
 			frontWheelSprite.x = metersToPixels(frontWheel.GetPosition().x);
 			frontWheelSprite.y = metersToPixels(frontWheel.GetPosition().y);
-			frontWheelSprite.rotation += frontWheel.GetAngularVelocity() * WORLD_STEP;
+			frontWheelSprite.rotation = frontWheel.GetAngle();
 			
 			rearWheelSprite.x = metersToPixels(rearWheel.GetPosition().x);
 			rearWheelSprite.y = metersToPixels(rearWheel.GetPosition().y);
-			rearWheelSprite.rotation += rearWheel.GetAngularVelocity() * WORLD_STEP;
+			rearWheelSprite.rotation = rearWheel.GetAngle();
 			
 			carSprite.x = metersToPixels(car.GetPosition().x);
 			carSprite.y = metersToPixels(car.GetPosition().y) - carBaseHeightPx;
