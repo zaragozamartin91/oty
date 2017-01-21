@@ -15,6 +15,8 @@ package
 	import starling.events.Event;
 	import starling.events.KeyboardEvent;
 	
+	import starling.extensions.fluocode.*;
+	
 	import Box2D.Dynamics.*;
 	import Box2D.Collision.*;
 	import Box2D.Collision.Shapes.*;
@@ -35,10 +37,17 @@ package
 		[Embed(source = "oty.png")]
 		public static const OtyBmp:Class;
 		
+		[Embed(source="wood-texture.jpg")]
+		public static const WoodBmp:Class;
+		
 		public static const PIXELS_TO_METER:int = 30;
 		public static const WORLD_STEP:Number = 1 / 30;
+		private var buttonSpacing:Number;
 		
-		private var world:b2World = new b2World(new b2Vec2(0, 10), true);
+		private var cam:Fluocam;
+		
+		private var box2dWorld:b2World = new b2World(new b2Vec2(0, 10), true);
+		private var starlingWorld:Sprite;
 		
 		private var car:b2Body;
 		private var carBodyDef:b2BodyDef;
@@ -51,15 +60,19 @@ package
 		private var rearAxlePrismaticJoint:b2PrismaticJoint;
 		private var rearWheel:b2Body;
 		private var frontWheel:b2Body;
+		private var floor:b2Body;
 		
 		private var frontWheelSprite:Sprite;
 		private var rearWheelSprite:Sprite;
 		private var carSprite:Sprite;
 		private var moveButtonTexture:Texture;
+		private var floorSprite:Sprite;
 		
 		private var carWidthPx:Number = 240;
 		private var carHeightPx:Number = 120;
 		private var carBaseHeightPx:Number = 40;
+		private var floorWidthPx:Number;
+		private var floorHeightPx:Number;
 		
 		public function Game():void
 		{
@@ -72,10 +85,16 @@ package
 			//Starling.current.nativeOverlay.addChild(debugSprite)
 			debugDraw();
 			
+			starlingWorld = new Sprite();
+			
 			// ************************ THE FLOOR ************************ //
+			
+			floorWidthPx = stage.stageWidth * 2;
+			floorHeightPx = 10;
+			
 			// shape
 			var floorShape:b2PolygonShape = new b2PolygonShape();
-			floorShape.SetAsBox(pixelsToMeters(stage.stageWidth) / 2, pixelsToMeters(10));
+			floorShape.SetAsBox(pixelsToMeters(floorWidthPx) / 2, pixelsToMeters(floorHeightPx) / 2);
 			// fixture
 			var floorFixture:b2FixtureDef = new b2FixtureDef();
 			floorFixture.density = 0;
@@ -86,7 +105,7 @@ package
 			var floorBodyDef:b2BodyDef = new b2BodyDef();
 			floorBodyDef.position.Set(pixelsToMeters(stage.stageWidth) / 2, pixelsToMeters(stage.stageHeight));
 			// the floor itself
-			var floor:b2Body = world.CreateBody(floorBodyDef);
+			floor = box2dWorld.CreateBody(floorBodyDef);
 			floor.CreateFixture(floorFixture);
 			
 			// ************************ THE CAR ************************ //
@@ -137,7 +156,7 @@ package
 			
 			// ************************ MERGING ALL TOGETHER ************************ //
 			// the car itself
-			car = world.CreateBody(carBodyDef);
+			car = box2dWorld.CreateBody(carBodyDef);
 			car.CreateFixture(carFixture);
 			car.CreateFixture(trunkFixture);
 			car.CreateFixture(hoodFixture);
@@ -158,11 +177,11 @@ package
 			axleBodyDef.type = b2Body.b2_dynamicBody;
 			// the rear axle itself
 			axleBodyDef.position.Set(car.GetWorldCenter().x - pixelsToMeters(60), car.GetWorldCenter().y + pixelsToMeters(65));
-			var rearAxle:b2Body = world.CreateBody(axleBodyDef);
+			var rearAxle:b2Body = box2dWorld.CreateBody(axleBodyDef);
 			rearAxle.CreateFixture(axleFixture);
 			// the front axle itself
 			axleBodyDef.position.Set(car.GetWorldCenter().x + pixelsToMeters(75), car.GetWorldCenter().y + pixelsToMeters(65));
-			var frontAxle:b2Body = world.CreateBody(axleBodyDef);
+			var frontAxle:b2Body = box2dWorld.CreateBody(axleBodyDef);
 			frontAxle.CreateFixture(axleFixture);
 			
 			// ************************ THE WHEELS ************************ //
@@ -181,11 +200,11 @@ package
 			wheelBodyDef.type = b2Body.b2_dynamicBody;
 			// the real wheel itself
 			wheelBodyDef.position.Set(car.GetWorldCenter().x - pixelsToMeters(60), car.GetWorldCenter().y + pixelsToMeters(65));
-			rearWheel = world.CreateBody(wheelBodyDef);
+			rearWheel = box2dWorld.CreateBody(wheelBodyDef);
 			rearWheel.CreateFixture(wheelFixture);
 			// the front wheel itself
 			wheelBodyDef.position.Set(car.GetWorldCenter().x + pixelsToMeters(75), car.GetWorldCenter().y + pixelsToMeters(65));
-			frontWheel = world.CreateBody(wheelBodyDef);
+			frontWheel = box2dWorld.CreateBody(wheelBodyDef);
 			frontWheel.CreateFixture(wheelFixture);
 			
 			// ************************ REVOLUTE JOINTS ************************ //
@@ -194,13 +213,13 @@ package
 			rearWheelRevoluteJointDef.Initialize(rearWheel, rearAxle, rearWheel.GetWorldCenter());
 			rearWheelRevoluteJointDef.enableMotor = true;
 			rearWheelRevoluteJointDef.maxMotorTorque = 10000;
-			rearWheelRevoluteJoint = world.CreateJoint(rearWheelRevoluteJointDef) as b2RevoluteJoint;
+			rearWheelRevoluteJoint = box2dWorld.CreateJoint(rearWheelRevoluteJointDef) as b2RevoluteJoint;
 			// front joint
 			var frontWheelRevoluteJointDef:b2RevoluteJointDef = new b2RevoluteJointDef();
 			frontWheelRevoluteJointDef.Initialize(frontWheel, frontAxle, frontWheel.GetWorldCenter());
 			frontWheelRevoluteJointDef.enableMotor = true;
 			frontWheelRevoluteJointDef.maxMotorTorque = 10000;
-			frontWheelRevoluteJoint = world.CreateJoint(frontWheelRevoluteJointDef) as b2RevoluteJoint;
+			frontWheelRevoluteJoint = box2dWorld.CreateJoint(frontWheelRevoluteJointDef) as b2RevoluteJoint;
 			
 			// ************************ PRISMATIC JOINTS ************************ //
 			//  definition
@@ -211,14 +230,15 @@ package
 			axlePrismaticJointDef.enableMotor = true;
 			// front axle
 			axlePrismaticJointDef.Initialize(car, frontAxle, frontAxle.GetWorldCenter(), new b2Vec2(0, 1));
-			frontAxlePrismaticJoint = world.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
+			frontAxlePrismaticJoint = box2dWorld.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
 			// rear axle
 			axlePrismaticJointDef.Initialize(car, rearAxle, rearAxle.GetWorldCenter(), new b2Vec2(0, 1));
-			rearAxlePrismaticJoint = world.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
+			rearAxlePrismaticJoint = box2dWorld.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
 			
 			/* SPRITES ----------------------------------------------------------------------------------------------------- */
 			
 			moveButtonTexture = Texture.fromEmbeddedAsset(ForwardButtonBmp);
+			buttonSpacing = stage.stageHeight * 0.05;
 			addForwardButton();
 			addBackButton();
 			
@@ -229,7 +249,7 @@ package
 			frontWheelSprite.alignPivot();
 			frontWheelSprite.width = metersToPixels(wheelShape.GetRadius() * 2);
 			frontWheelSprite.height = metersToPixels(wheelShape.GetRadius() * 2);
-			addChild(frontWheelSprite);
+			starlingWorld.addChild(frontWheelSprite);
 			
 			var rearWheelImg:Image = new Image(wheelTexture);
 			rearWheelSprite = new Sprite();
@@ -237,7 +257,7 @@ package
 			rearWheelSprite.alignPivot();
 			rearWheelSprite.width = metersToPixels(wheelShape.GetRadius() * 2);
 			rearWheelSprite.height = metersToPixels(wheelShape.GetRadius() * 2);
-			addChild(rearWheelSprite);
+			starlingWorld.addChild(rearWheelSprite);
 			
 			var carTexture:Texture = Texture.fromEmbeddedAsset(CarBmp);
 			var carImg:Image = new Image(carTexture);
@@ -246,7 +266,7 @@ package
 			carSprite.height = metersToPixels(carHeightPx);
 			carSprite.addChild(carImg);
 			carSprite.alignPivot();
-			addChild(carSprite);
+			starlingWorld.addChild(carSprite);
 			
 			var otyTexture:Texture = Texture.fromEmbeddedAsset(OtyBmp);
 			var otySprite:Sprite = new Sprite();
@@ -255,12 +275,30 @@ package
 			otySprite.alignPivot();
 			otySprite.x = stage.stageWidth / 2;
 			otySprite.y = stage.stageHeight * 0.45;
-			addChild(otySprite);
+			starlingWorld.addChild(otySprite);
 			var otyTween:Tween = new Tween(otySprite, 2);
 			otyTween.animate("scale", 0.5);
 			otyTween.animate("alpha", 0.5);
 			otyTween.animate("rotation", Math.PI * 2);
 			Starling.juggler.add(otyTween);
+			
+			var floorTexture:Texture = Texture.fromEmbeddedAsset(WoodBmp);
+			floorSprite = new Sprite();
+			floorSprite.addChild(new Image(floorTexture));
+			floorSprite.alignPivot();
+			floorSprite.width = floorWidthPx;
+			floorSprite.height = floorHeightPx;
+			floorSprite.x = metersToPixels(floor.GetPosition().x);
+			floorSprite.y = metersToPixels(floor.GetPosition().y);
+			starlingWorld.addChild(floorSprite);
+			
+			addChild(starlingWorld);
+			
+			/* CAMERA ----------------------------------------------------------------------------------------------------- */
+			
+			var cam:Fluocam=new Fluocam(starlingWorld, stage.stageWidth, stage.stageHeight, false);
+			addChild(cam);
+			cam.changeTarget(carSprite);
 			
 			/* LISTENERS ----------------------------------------------------------------------------------------------------- */
 			
@@ -278,8 +316,8 @@ package
 			
 			buttonSprite.width = stage.stageWidth * 0.15;
 			buttonSprite.height = stage.stageWidth * 0.15;
-			buttonSprite.x = stage.stageWidth - buttonSprite.width;
-			buttonSprite.y = 0;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width - buttonSpacing;
+			buttonSprite.y = buttonSpacing;
 			
 			buttonSprite.addEventListener(TouchEvent.TOUCH, onForwardButtonTouch);
 			
@@ -296,8 +334,8 @@ package
 			buttonSprite.width = stage.stageWidth * 0.15;
 			buttonSprite.height = stage.stageWidth * 0.15;
 			/* la separacion es de buttonSprite.width * 1.1 debido a que la rotacion de 180° provoca un "desplazamiento" del boton a la izquierda. */
-			buttonSprite.x = stage.stageWidth - buttonSprite.width * 1.1;
-			buttonSprite.y = buttonSprite.height;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width * 1.1 - buttonSpacing;
+			buttonSprite.y = buttonSprite.height + buttonSpacing;
 			
 			buttonSprite.addEventListener(TouchEvent.TOUCH, onBackButtonTouch);
 			
@@ -354,7 +392,7 @@ package
 			debugDraw.SetFillAlpha(0.4);
 			debugDraw.SetFlags(b2DebugDraw.e_shapeBit);
 			//debugDraw.SetDrawScale(50);
-			world.SetDebugDraw(debugDraw);
+			box2dWorld.SetDebugDraw(debugDraw);
 		}
 		
 		private function keyPressed(e:KeyboardEvent):void
@@ -416,15 +454,16 @@ package
 			carSprite.y = metersToPixels(car.GetPosition().y) - Math.cos(car.GetAngle()) * carBaseHeightPx;
 			carSprite.rotation = car.GetAngle();
 			
+			
 			rearWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
 			frontWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
 			frontAxlePrismaticJoint.SetMaxMotorForce(Math.abs(600 * frontAxlePrismaticJoint.GetJointTranslation()));
 			frontAxlePrismaticJoint.SetMotorSpeed((frontAxlePrismaticJoint.GetMotorSpeed() - 2 * frontAxlePrismaticJoint.GetJointTranslation()));
 			rearAxlePrismaticJoint.SetMaxMotorForce(Math.abs(600 * rearAxlePrismaticJoint.GetJointTranslation()));
 			rearAxlePrismaticJoint.SetMotorSpeed((rearAxlePrismaticJoint.GetMotorSpeed() - 2 * rearAxlePrismaticJoint.GetJointTranslation()));
-			world.Step(WORLD_STEP, 10, 10);
-			world.ClearForces();
-			world.DrawDebugData();
+			box2dWorld.Step(WORLD_STEP, 10, 10);
+			box2dWorld.ClearForces();
+			box2dWorld.DrawDebugData();
 		}
 		
 		public static function metersToPixels(m:Number):Number
@@ -436,6 +475,7 @@ package
 		{
 			return p / PIXELS_TO_METER;
 		}
+		
 	}
 
 }
