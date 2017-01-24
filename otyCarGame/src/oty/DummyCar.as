@@ -31,6 +31,7 @@ package oty
 		private var rearAxlePrismaticJoint:b2PrismaticJoint;
 		private var rearWheel:b2Body;
 		private var frontWheel:b2Body;
+		private var wheelShape:b2CircleShape;
 		
 		private var frontWheelSprite:Sprite;
 		private var rearWheelSprite:Sprite;
@@ -47,9 +48,92 @@ package oty
 		public function DummyCar(box2dWorld:b2World = null)
 		{
 			this._box2dWorld = box2dWorld ? box2dWorld : MainBox2dWorld.getInstance().world;
+			
+			buildBox2dBody();
+			
+			buildStarlingBody();
 		}
 		
 		public function addToWorld(starlingWorld:Sprite):void
+		{
+			starlingWorld.addChild(frontWheelSprite);
+			starlingWorld.addChild(rearWheelSprite);
+			starlingWorld.addChild(carSprite);
+		}
+		
+		public function goLeft():void
+		{
+			left = true;
+		}
+		
+		public function stopLeft():void
+		{
+			left = false;
+		}
+		
+		public function goRight():void
+		{
+			right = true;
+		}
+		
+		public function stopRight():void
+		{
+			right = false;
+		}
+		
+		public function update(time:Number):void
+		{
+			if (left)
+			{
+				motorSpeed += 0.15;
+			}
+			if (right)
+			{
+				motorSpeed -= 0.15;
+			}
+			motorSpeed *= 0.99;
+			if (motorSpeed > 100)
+			{
+				motorSpeed = 100;
+			}
+			
+			frontWheelSprite.x = metersToPixels(frontWheel.GetPosition().x);
+			frontWheelSprite.y = metersToPixels(frontWheel.GetPosition().y);
+			frontWheelSprite.rotation = frontWheel.GetAngle();
+			
+			rearWheelSprite.x = metersToPixels(rearWheel.GetPosition().x);
+			rearWheelSprite.y = metersToPixels(rearWheel.GetPosition().y);
+			rearWheelSprite.rotation = rearWheel.GetAngle();
+			
+			/* debido a que "car" representa el cuerpo de la BASE del auto, la posicion del sprite del dibujo (que representa el cuerpo completo del auto) debe desplazarse teniendo en cuenta la rotacion de la base.
+			 * El desplazamiento siempre es en base a la altura de la base del auto.*/
+			carSprite.x = metersToPixels(car.GetPosition().x) + Math.sin(car.GetAngle()) * carBaseHeightPx;
+			carSprite.y = metersToPixels(car.GetPosition().y) - Math.cos(car.GetAngle()) * carBaseHeightPx;
+			carSprite.rotation = car.GetAngle();
+			
+			rearWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
+			rearAxlePrismaticJoint.SetMaxMotorForce(Math.abs(600 * rearAxlePrismaticJoint.GetJointTranslation()));
+			rearAxlePrismaticJoint.SetMotorSpeed((rearAxlePrismaticJoint.GetMotorSpeed() - 2 * rearAxlePrismaticJoint.GetJointTranslation()));
+			frontWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
+			frontAxlePrismaticJoint.SetMaxMotorForce(Math.abs(600 * frontAxlePrismaticJoint.GetJointTranslation()));
+			frontAxlePrismaticJoint.SetMotorSpeed((frontAxlePrismaticJoint.GetMotorSpeed() - 2 * frontAxlePrismaticJoint.GetJointTranslation()));
+		}
+		
+		public function get sprite():Sprite  { return carSprite; }
+		
+		public function get box2dBody():b2Body  { return car; }
+		
+		public function metersToPixels(m:Number):Number
+		{
+			return MainBox2dWorld.metersToPixels(m);
+		}
+		
+		public function pixelsToMeters(p:Number):Number
+		{
+			return MainBox2dWorld.pixelsToMeters(p);
+		}
+		
+		private function buildBox2dBody():void
 		{
 			// ************************ THE CAR ************************ //
 			// shape
@@ -129,7 +213,7 @@ package oty
 			
 			// ************************ THE WHEELS ************************ //
 			// shape
-			var wheelShape:b2CircleShape = new b2CircleShape(pixelsToMeters(40));
+			wheelShape = new b2CircleShape(pixelsToMeters(40));
 			trace("wheel radius: " + wheelShape.GetRadius());
 			// fixture
 			var wheelFixture:b2FixtureDef = new b2FixtureDef();
@@ -177,7 +261,11 @@ package oty
 			// rear axle
 			axlePrismaticJointDef.Initialize(car, rearAxle, rearAxle.GetWorldCenter(), new b2Vec2(0, 1));
 			rearAxlePrismaticJoint = _box2dWorld.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
-			
+		
+		}
+		
+		private function buildStarlingBody():void
+		{
 			// ************************ SPRITES ************************ //
 			var wheelTexture:Texture = TextureRepository.getInstance().wheelTexture;
 			var frontWheelImg:Image = new Image(wheelTexture);
@@ -201,82 +289,7 @@ package oty
 			carSprite.height = metersToPixels(carHeightPx);
 			carSprite.addChild(carImg);
 			carSprite.alignPivot();
-			
-			starlingWorld.addChild(frontWheelSprite);
-			starlingWorld.addChild(rearWheelSprite);
-			starlingWorld.addChild(carSprite);
-		}
 		
-		public function goLeft():void
-		{
-			left = true;
-		}
-		
-		public function stopLeft():void
-		{
-			left = false;
-		}
-		
-		public function goRight():void
-		{
-			right = true;
-		}
-		
-		public function stopRight():void
-		{
-			right = false;
-		}
-		
-		public function update(time:Number):void
-		{
-			if (left)
-			{
-				motorSpeed += 0.15;
-			}
-			if (right)
-			{
-				motorSpeed -= 0.15;
-			}
-			motorSpeed *= 0.99;
-			if (motorSpeed > 100)
-			{
-				motorSpeed = 100;
-			}
-			
-			frontWheelSprite.x = metersToPixels(frontWheel.GetPosition().x);
-			frontWheelSprite.y = metersToPixels(frontWheel.GetPosition().y);
-			frontWheelSprite.rotation = frontWheel.GetAngle();
-			
-			rearWheelSprite.x = metersToPixels(rearWheel.GetPosition().x);
-			rearWheelSprite.y = metersToPixels(rearWheel.GetPosition().y);
-			rearWheelSprite.rotation = rearWheel.GetAngle();
-			
-			/* debido a que "car" representa el cuerpo de la BASE del auto, la posicion del sprite del dibujo (que representa el cuerpo completo del auto) debe desplazarse teniendo en cuenta la rotacion de la base.
-			 * El desplazamiento siempre es en base a la altura de la base del auto.*/
-			carSprite.x = metersToPixels(car.GetPosition().x) + Math.sin(car.GetAngle()) * carBaseHeightPx;
-			carSprite.y = metersToPixels(car.GetPosition().y) - Math.cos(car.GetAngle()) * carBaseHeightPx;
-			carSprite.rotation = car.GetAngle();
-			
-			rearWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
-			rearAxlePrismaticJoint.SetMaxMotorForce(Math.abs(600 * rearAxlePrismaticJoint.GetJointTranslation()));
-			rearAxlePrismaticJoint.SetMotorSpeed((rearAxlePrismaticJoint.GetMotorSpeed() - 2 * rearAxlePrismaticJoint.GetJointTranslation()));
-			frontWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
-			frontAxlePrismaticJoint.SetMaxMotorForce(Math.abs(600 * frontAxlePrismaticJoint.GetJointTranslation()));
-			frontAxlePrismaticJoint.SetMotorSpeed((frontAxlePrismaticJoint.GetMotorSpeed() - 2 * frontAxlePrismaticJoint.GetJointTranslation()));
-		}
-		
-		public function get sprite():Sprite  { return carSprite; }
-		
-		public function get box2dBody():b2Body  { return car; }
-		
-		public function metersToPixels(m:Number):Number
-		{
-			return MainBox2dWorld.metersToPixels(m);
-		}
-		
-		public function pixelsToMeters(p:Number):Number
-		{
-			return MainBox2dWorld.pixelsToMeters(p);
 		}
 	}
 }

@@ -25,14 +25,14 @@ package oty
 	
 	public class Game extends starling.display.Sprite
 	{
+		public static const STARLING_WORLD:Sprite = new Sprite();
+		
 		private var box2dWorld:b2World;
 		
 		private var buttonSpacing:Number;
 		
 		private var cameraCenter:Sprite;
 		private var cam:Fluocam;
-		
-		private var starlingWorld:Sprite;
 		
 		private var moveButtonTexture:Texture;
 		
@@ -41,6 +41,8 @@ package oty
 		private var floorHeightPx:Number;
 		
 		private var car:DummyCar;
+		
+		private var camera:Fluocam;
 		
 		public function Game():void
 		{
@@ -56,20 +58,17 @@ package oty
 			
 			debugDraw();
 			
-			starlingWorld = new Sprite();
-			
 			// ************************ THE FLOOR ************************ //
 			
 			floorWidthPx = stage.stageWidth * 2;
 			floorHeightPx = 100;
-			
 			floor = new StraightRamp(stage.stageWidth / 2, stage.stageHeight, floorWidthPx, floorHeightPx);
-			floor.addToWorld(starlingWorld);
+			floor.addToWorld(STARLING_WORLD);
 			
-			new StraightRamp(stage.stageWidth, stage.stageHeight - floorHeightPx, floorWidthPx / 4, floorHeightPx, -Math.PI / 6).addToWorld(starlingWorld);
+			new StraightRamp(stage.stageWidth, stage.stageHeight - floorHeightPx / 2, floorWidthPx / 4, floorHeightPx, -Math.PI / 12).addToWorld(STARLING_WORLD);
 			
 			car = new DummyCar();
-			car.addToWorld(starlingWorld);
+			car.addToWorld(STARLING_WORLD);
 			
 			var otyTexture:Texture = TextureRepository.getInstance().otyLogoTexture;
 			var otySprite:Sprite = new Sprite();
@@ -90,14 +89,11 @@ package oty
 			addForwardButton();
 			addBackButton();
 			
-			addChild(starlingWorld);
+			this.addChild(STARLING_WORLD);
 			
 			/* CAMERA ----------------------------------------------------------------------------------------------------- */
 			
-			var cam:Fluocam = new Fluocam(starlingWorld, stage.stageWidth, stage.stageHeight, false);
-			addChild(cam);
-			cameraCenter = new Sprite();
-			cam.changeTarget(cameraCenter);
+			setupCamera();
 			
 			/* LISTENERS ----------------------------------------------------------------------------------------------------- */
 			
@@ -141,7 +137,7 @@ package oty
 			addChild(buttonSprite);
 		}
 		
-		public function debugDraw():void
+		private function debugDraw():void
 		{
 			var debugDraw:b2DebugDraw = new b2DebugDraw();
 			debugDraw.SetSprite(Starling.current.nativeOverlay);
@@ -227,8 +223,19 @@ package oty
 		{
 			car.update(time);
 			MainBox2dWorld.getInstance().update();
-			cameraCenter.x = car.sprite.x;
-			cameraCenter.y = car.sprite.y - 30;
+			
+			if (cameraCenter) {
+				cameraCenter.x = car.sprite.x;
+				cameraCenter.y = car.sprite.y - 30;	
+			}
+		}
+		
+		private function setupCamera():void 
+		{
+			camera = new Fluocam(STARLING_WORLD, stage.stageWidth, stage.stageHeight, false);
+			this.addChild(camera);
+			cameraCenter = new Sprite();
+			camera.changeTarget(cameraCenter);
 		}
 		
 		public static function metersToPixels(m:Number):Number
