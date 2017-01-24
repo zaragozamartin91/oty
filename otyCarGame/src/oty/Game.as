@@ -31,9 +31,6 @@ package oty
 		
 		private var buttonSpacing:Number;
 		
-		private var cameraCenter:Sprite;
-		private var cam:Fluocam;
-		
 		private var moveButtonTexture:Texture;
 		
 		private var floor:StraightRamp;
@@ -42,7 +39,7 @@ package oty
 		
 		private var car:DummyCar;
 		
-		private var camera:Fluocam;
+		private var camera:Camera;
 		
 		public function Game():void
 		{
@@ -224,18 +221,15 @@ package oty
 			car.update(time);
 			MainBox2dWorld.getInstance().update();
 			
-			if (cameraCenter) {
-				cameraCenter.x = car.sprite.x;
-				cameraCenter.y = car.sprite.y - 30;	
+			if (camera)
+			{
+				camera.setCenterX(car.sprite.x).setCenterY(car.sprite.y - 30);
 			}
 		}
 		
-		private function setupCamera():void 
+		private function setupCamera():void
 		{
-			camera = new Fluocam(STARLING_WORLD, stage.stageWidth, stage.stageHeight, false);
-			this.addChild(camera);
-			cameraCenter = new Sprite();
-			camera.changeTarget(cameraCenter);
+			camera = Camera.buildNew(STARLING_WORLD, stage.stageWidth, stage.stageHeight).addToWorld(this);
 		}
 		
 		public static function metersToPixels(m:Number):Number

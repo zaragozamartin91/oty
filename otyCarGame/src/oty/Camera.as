@@ -6,28 +6,37 @@ package oty
 	import starling.extensions.fluocode.Fluocam;
 	
 	/**
-	 * ...
+	 * 
 	 * @author martin
 	 */
 	public class Camera
 	{
-		private static const $instance:Camera;
+		private static var $instance:Camera;
 		private static const $uniqueId:Number = Math.random();
 		
 		private var _camera:Fluocam;
 		private var _cameraCenter:Sprite;
 		
-		public static function getInstance():Camera
+		public static function buildNew(spriteStage:Sprite, width:Number, height:Number):Camera
 		{
-			$instance = $instance ? $instance : new Camera($uniqueId);
+			$instance = new Camera($uniqueId, spriteStage, width, height);
 			return $instance;
 		}
 		
-		public function Camera(uniqueId:Number)
+		public static function getInstance():Camera
+		{
+			if (!$instance)
+			{
+				throw new Error("Invocar a buildNew antes!");
+			}
+			return $instance;
+		}
+		
+		public function Camera(uniqueId:Number, spriteStage:Sprite, width:Number, height:Number)
 		{
 			if (uniqueId == $uniqueId)
 			{
-				_camera = new Fluocam(STARLING_WORLD, stage.stageWidth, stage.stageHeight, false);
+				_camera = new Fluocam(spriteStage, width, height, false);
 				_cameraCenter = new Sprite();
 				_camera.changeTarget(_cameraCenter);
 			}
@@ -37,7 +46,7 @@ package oty
 			}
 		}
 		
-		public function addToWorld(obj:DisplayObjectContainer):Camera
+		public function addToWorld(obj:Sprite):Camera
 		{
 			obj.addChild(_camera);
 			return this;
@@ -55,12 +64,14 @@ package oty
 			return this;
 		}
 		
-		public function setCenterX(x:NUmber):Camera {
+		public function setCenterX(x:Number):Camera
+		{
 			_cameraCenter.x = x;
 			return this;
 		}
 		
-		public function setCenterY(y:NUmber):Camera {
+		public function setCenterY(y:Number):Camera
+		{
 			_cameraCenter.y = y;
 			return this;
 		}
