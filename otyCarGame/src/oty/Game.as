@@ -27,8 +27,6 @@ package oty
 	{
 		public static const STARLING_WORLD:Sprite = new Sprite();
 		
-		private var box2dWorld:b2World;
-		
 		private var buttonSpacing:Number;
 		
 		private var moveButtonTexture:Texture;
@@ -39,7 +37,7 @@ package oty
 		
 		private var car:DummyCar;
 		
-		private var camera:Camera;
+		private var camera:MainCamera;
 		
 		public function Game():void
 		{
@@ -51,9 +49,7 @@ package oty
 			//var debugSprite = new flash.display.Sprite();
 			//Starling.current.nativeOverlay.addChild(debugSprite)
 			
-			box2dWorld = MainBox2dWorld.getInstance().world;
-			
-			debugDraw();
+			MainBox2dWorld.getInstance().debugDraw();
 			
 			// ************************ THE FLOOR ************************ //
 			
@@ -90,14 +86,14 @@ package oty
 			
 			/* CAMERA ----------------------------------------------------------------------------------------------------- */
 			
-			setupCamera();
+			MainCamera.buildNew(STARLING_WORLD, stage.stageWidth, stage.stageHeight);
+			camera = MainCamera.getInstance().addToWorld(this);
 			
 			/* LISTENERS ----------------------------------------------------------------------------------------------------- */
 			
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
 			this.stage.addEventListener(KeyboardEvent.KEY_UP, keyReleased);
-			
-			addEventListener(Event.ENTER_FRAME, updateWorld);
+			this.addEventListener(Event.ENTER_FRAME, updateWorld);
 		}
 		
 		private function addForwardButton():void
@@ -133,19 +129,7 @@ package oty
 			
 			addChild(buttonSprite);
 		}
-		
-		private function debugDraw():void
-		{
-			var debugDraw:b2DebugDraw = new b2DebugDraw();
-			debugDraw.SetSprite(Starling.current.nativeOverlay);
-			debugDraw.SetDrawScale(MainBox2dWorld.PIXELS_TO_METER);
-			debugDraw.SetLineThickness(1.0);
-			debugDraw.SetAlpha(1);
-			debugDraw.SetFillAlpha(0.4);
-			debugDraw.SetFlags(b2DebugDraw.e_shapeBit);
-			//debugDraw.SetDrawScale(50);
-			box2dWorld.SetDebugDraw(debugDraw);
-		}
+	
 		
 		private function onForwardButtonTouch(event:TouchEvent):void
 		{
@@ -225,11 +209,6 @@ package oty
 			{
 				camera.setCenterX(car.sprite.x).setCenterY(car.sprite.y - 30);
 			}
-		}
-		
-		private function setupCamera():void
-		{
-			camera = Camera.buildNew(STARLING_WORLD, stage.stageWidth, stage.stageHeight).addToWorld(this);
 		}
 		
 		public static function metersToPixels(m:Number):Number

@@ -10,61 +10,72 @@ package oty
 	import starling.textures.Texture;
 	
 	/**
-	 * ...
+	 * Rampas rectas.
 	 * @author martin
 	 */
 	public class StraightRamp
 	{
-		private var floorSprite:Sprite;
-		private var floor:b2Body;
-		private var box2dWorld:b2World;
+		private var _rampSprite:Sprite;
+		private var _rampBody:b2Body;
+		private var _box2dWorld:b2World;
 		
-		public function get sprite()  { return floorSprite; }
+		public function get sprite()  { return _rampSprite; }
 		
-		public function StraightRamp(xPx:Number, yPx:Number, widthPx:Number, heightPx:Number, rotation:Number = 0, __box2dWorld:b2World = null)
+		/**
+		 * Construye una rampa nueva.
+		 * @param xPx 		posicion x en pixeles.
+		 * @param yPx 		posicion y en pixeles.
+		 * @param widthPx 	Anchura en pixeles.
+		 * @param heightPx	Altura en pixeles.
+		 * @param rotation	Rotacion de la rampa en radianes. La rotacion se da desde el centro de masa de la misma en sentido horario.
+		 * */
+		public function StraightRamp(xPx:Number, yPx:Number, widthPx:Number, heightPx:Number, rotation:Number = 0, box2dWorld:b2World = null)
 		{
-			this.box2dWorld = __box2dWorld ? __box2dWorld : MainBox2dWorld.getInstance().world;
+			_box2dWorld = box2dWorld ? box2dWorld : MainBox2dWorld.getInstance().world;
 			
 			// shape
-			var floorShape:b2PolygonShape = new b2PolygonShape();
-			floorShape.SetAsBox(pixelsToMeters(widthPx) / 2, pixelsToMeters(heightPx) / 2);
+			var rampShape:b2PolygonShape = new b2PolygonShape();
+			rampShape.SetAsBox(pixelsToMeters(widthPx) / 2, pixelsToMeters(heightPx) / 2);
 			// fixture
-			var floorFixture:b2FixtureDef = new b2FixtureDef();
-			floorFixture.density = 0;
-			floorFixture.friction = 3;
-			floorFixture.restitution = 0;
-			floorFixture.shape = floorShape;
+			var rampFixture:b2FixtureDef = new b2FixtureDef();
+			rampFixture.density = 0;
+			rampFixture.friction = 3;
+			rampFixture.restitution = 0;
+			rampFixture.shape = rampShape;
 			// body definition
 			var floorBodyDef:b2BodyDef = new b2BodyDef();
 			floorBodyDef.position.Set(pixelsToMeters(xPx), pixelsToMeters(yPx));
 			// the floor itself
-			floor = box2dWorld.CreateBody(floorBodyDef);
-			floor.CreateFixture(floorFixture);
-			floor.SetAngle(rotation);
+			_rampBody = _box2dWorld.CreateBody(floorBodyDef);
+			_rampBody.CreateFixture(rampFixture);
+			_rampBody.SetAngle(rotation);
 			
-			var floorTexture:Texture = TextureRepository.getInstance().woodTexture;
-			floorSprite = new Sprite();
-			floorSprite.addChild(new Image(floorTexture));
-			floorSprite.alignPivot();
-			floorSprite.width = widthPx;
-			floorSprite.height = heightPx;
-			floorSprite.x = metersToPixels(floor.GetPosition().x);
-			floorSprite.y = metersToPixels(floor.GetPosition().y);
-			floorSprite.rotation = rotation;
+			var rampTexture:Texture = TextureRepository.getInstance().woodTexture;
+			_rampSprite = new Sprite();
+			_rampSprite.addChild(new Image(rampTexture));
+			_rampSprite.alignPivot();
+			_rampSprite.width = widthPx;
+			_rampSprite.height = heightPx;
+			_rampSprite.x = metersToPixels(_rampBody.GetPosition().x);
+			_rampSprite.y = metersToPixels(_rampBody.GetPosition().y);
+			_rampSprite.rotation = rotation;
 		}
 		
+		/**
+		 * Agrega la rampa al mundo.
+		 * */
 		public function addToWorld(starlingWorld:Sprite):StraightRamp
 		{
-			starlingWorld.addChild(floorSprite);
+			starlingWorld.addChild(_rampSprite);
 			return this;
 		}
 		
-		public function metersToPixels(m:Number):Number
+		private function metersToPixels(m:Number):Number
 		{
 			return MainBox2dWorld.metersToPixels(m);
 		}
 		
-		public function pixelsToMeters(p:Number):Number
+		private function pixelsToMeters(p:Number):Number
 		{
 			return MainBox2dWorld.pixelsToMeters(p);
 		}
