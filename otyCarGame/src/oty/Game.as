@@ -36,8 +36,7 @@ package oty
 		
 		private var moveButtonTexture:Texture;
 		
-		private var floorSprite:Sprite;
-		private var floor:b2Body;
+		private var floor:StraightRamp;
 		private var floorWidthPx:Number;
 		private var floorHeightPx:Number;
 		
@@ -62,25 +61,12 @@ package oty
 			// ************************ THE FLOOR ************************ //
 			
 			floorWidthPx = stage.stageWidth * 2;
-			floorHeightPx = 10;
+			floorHeightPx = 100;
 			
-			// shape
-			var floorShape:b2PolygonShape = new b2PolygonShape();
-			floorShape.SetAsBox(pixelsToMeters(floorWidthPx) / 2, pixelsToMeters(floorHeightPx) / 2);
-			// fixture
-			var floorFixture:b2FixtureDef = new b2FixtureDef();
-			floorFixture.density = 0;
-			floorFixture.friction = 3;
-			floorFixture.restitution = 0;
-			floorFixture.shape = floorShape;
-			// body definition
-			var floorBodyDef:b2BodyDef = new b2BodyDef();
-			floorBodyDef.position.Set(pixelsToMeters(stage.stageWidth) / 2, pixelsToMeters(stage.stageHeight));
-			// the floor itself
-			floor = box2dWorld.CreateBody(floorBodyDef);
-			floor.CreateFixture(floorFixture);
+			floor = new StraightRamp(stage.stageWidth / 2, stage.stageHeight, floorWidthPx, floorHeightPx);
+			floor.addToWorld(starlingWorld);
 			
-			/* SPRITES ----------------------------------------------------------------------------------------------------- */
+			new StraightRamp(stage.stageWidth, stage.stageHeight - floorHeightPx, floorWidthPx / 4, floorHeightPx, -Math.PI / 6).addToWorld(starlingWorld);
 			
 			car = new DummyCar();
 			car.addToWorld(starlingWorld);
@@ -103,16 +89,6 @@ package oty
 			buttonSpacing = stage.stageHeight * 0.05;
 			addForwardButton();
 			addBackButton();
-			
-			var floorTexture:Texture = TextureRepository.getInstance().woodTexture;
-			floorSprite = new Sprite();
-			floorSprite.addChild(new Image(floorTexture));
-			floorSprite.alignPivot();
-			floorSprite.width = floorWidthPx;
-			floorSprite.height = floorHeightPx;
-			floorSprite.x = metersToPixels(floor.GetPosition().x);
-			floorSprite.y = metersToPixels(floor.GetPosition().y);
-			starlingWorld.addChild(floorSprite);
 			
 			addChild(starlingWorld);
 			

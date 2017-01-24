@@ -11,7 +11,7 @@ package oty
 	import Box2D.Dynamics.b2BodyDef;
 	import Box2D.Dynamics.b2FixtureDef;
 	import Box2D.Dynamics.b2World;
-
+	
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.textures.Texture;
@@ -22,7 +22,7 @@ package oty
 	 */
 	public class DummyCar
 	{
-		private var box2dWorld:b2World;
+		private var _box2dWorld:b2World;
 		private var car:b2Body;
 		private var carBodyDef:b2BodyDef;
 		private var rearWheelRevoluteJoint:b2RevoluteJoint;
@@ -36,7 +36,6 @@ package oty
 		private var rearWheelSprite:Sprite;
 		private var carSprite:Sprite;
 		
-		
 		private var carWidthPx:Number = 240;
 		private var carHeightPx:Number = 120;
 		private var carBaseHeightPx:Number = 40;
@@ -45,14 +44,14 @@ package oty
 		private var left:Boolean;
 		private var right:Boolean;
 		
-		public function DummyCar()
+		public function DummyCar(box2dWorld:b2World = null)
 		{
-			this.box2dWorld = MainBox2dWorld.getInstance().world;			
+			this._box2dWorld = box2dWorld ? box2dWorld : MainBox2dWorld.getInstance().world;
 		}
 		
 		public function addToWorld(starlingWorld:Sprite):void
 		{
-						// ************************ THE CAR ************************ //
+			// ************************ THE CAR ************************ //
 			// shape
 			var carShape:b2PolygonShape = new b2PolygonShape();
 			carShape.SetAsBox(pixelsToMeters(carWidthPx / 2), pixelsToMeters(carBaseHeightPx / 2));
@@ -100,7 +99,7 @@ package oty
 			
 			// ************************ MERGING ALL TOGETHER ************************ //
 			// the car itself
-			car = box2dWorld.CreateBody(carBodyDef);
+			car = _box2dWorld.CreateBody(carBodyDef);
 			car.CreateFixture(carFixture);
 			car.CreateFixture(trunkFixture);
 			car.CreateFixture(hoodFixture);
@@ -121,11 +120,11 @@ package oty
 			axleBodyDef.type = b2Body.b2_dynamicBody;
 			// the rear axle itself
 			axleBodyDef.position.Set(car.GetWorldCenter().x - pixelsToMeters(60), car.GetWorldCenter().y + pixelsToMeters(65));
-			var rearAxle:b2Body = box2dWorld.CreateBody(axleBodyDef);
+			var rearAxle:b2Body = _box2dWorld.CreateBody(axleBodyDef);
 			rearAxle.CreateFixture(axleFixture);
 			// the front axle itself
 			axleBodyDef.position.Set(car.GetWorldCenter().x + pixelsToMeters(75), car.GetWorldCenter().y + pixelsToMeters(65));
-			var frontAxle:b2Body = box2dWorld.CreateBody(axleBodyDef);
+			var frontAxle:b2Body = _box2dWorld.CreateBody(axleBodyDef);
 			frontAxle.CreateFixture(axleFixture);
 			
 			// ************************ THE WHEELS ************************ //
@@ -144,11 +143,11 @@ package oty
 			wheelBodyDef.type = b2Body.b2_dynamicBody;
 			// the real wheel itself
 			wheelBodyDef.position.Set(car.GetWorldCenter().x - pixelsToMeters(60), car.GetWorldCenter().y + pixelsToMeters(65));
-			rearWheel = box2dWorld.CreateBody(wheelBodyDef);
+			rearWheel = _box2dWorld.CreateBody(wheelBodyDef);
 			rearWheel.CreateFixture(wheelFixture);
 			// the front wheel itself
 			wheelBodyDef.position.Set(car.GetWorldCenter().x + pixelsToMeters(75), car.GetWorldCenter().y + pixelsToMeters(65));
-			frontWheel = box2dWorld.CreateBody(wheelBodyDef);
+			frontWheel = _box2dWorld.CreateBody(wheelBodyDef);
 			frontWheel.CreateFixture(wheelFixture);
 			
 			// ************************ REVOLUTE JOINTS ************************ //
@@ -157,13 +156,13 @@ package oty
 			rearWheelRevoluteJointDef.Initialize(rearWheel, rearAxle, rearWheel.GetWorldCenter());
 			rearWheelRevoluteJointDef.enableMotor = true;
 			rearWheelRevoluteJointDef.maxMotorTorque = 10000;
-			rearWheelRevoluteJoint = box2dWorld.CreateJoint(rearWheelRevoluteJointDef) as b2RevoluteJoint;
+			rearWheelRevoluteJoint = _box2dWorld.CreateJoint(rearWheelRevoluteJointDef) as b2RevoluteJoint;
 			// front joint
 			var frontWheelRevoluteJointDef:b2RevoluteJointDef = new b2RevoluteJointDef();
 			frontWheelRevoluteJointDef.Initialize(frontWheel, frontAxle, frontWheel.GetWorldCenter());
 			frontWheelRevoluteJointDef.enableMotor = true;
 			frontWheelRevoluteJointDef.maxMotorTorque = 10000;
-			frontWheelRevoluteJoint = box2dWorld.CreateJoint(frontWheelRevoluteJointDef) as b2RevoluteJoint;
+			frontWheelRevoluteJoint = _box2dWorld.CreateJoint(frontWheelRevoluteJointDef) as b2RevoluteJoint;
 			
 			// ************************ PRISMATIC JOINTS ************************ //
 			//  definition
@@ -174,10 +173,10 @@ package oty
 			axlePrismaticJointDef.enableMotor = true;
 			// front axle
 			axlePrismaticJointDef.Initialize(car, frontAxle, frontAxle.GetWorldCenter(), new b2Vec2(0, 1));
-			frontAxlePrismaticJoint = box2dWorld.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
+			frontAxlePrismaticJoint = _box2dWorld.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
 			// rear axle
 			axlePrismaticJointDef.Initialize(car, rearAxle, rearAxle.GetWorldCenter(), new b2Vec2(0, 1));
-			rearAxlePrismaticJoint = box2dWorld.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
+			rearAxlePrismaticJoint = _box2dWorld.CreateJoint(axlePrismaticJointDef) as b2PrismaticJoint;
 			
 			// ************************ SPRITES ************************ //
 			var wheelTexture:Texture = TextureRepository.getInstance().wheelTexture;
@@ -202,7 +201,6 @@ package oty
 			carSprite.height = metersToPixels(carHeightPx);
 			carSprite.addChild(carImg);
 			carSprite.alignPivot();
-
 			
 			starlingWorld.addChild(frontWheelSprite);
 			starlingWorld.addChild(rearWheelSprite);
@@ -233,11 +231,11 @@ package oty
 		{
 			if (left)
 			{
-				motorSpeed += 0.1;
+				motorSpeed += 0.15;
 			}
 			if (right)
 			{
-				motorSpeed -= 0.1;
+				motorSpeed -= 0.15;
 			}
 			motorSpeed *= 0.99;
 			if (motorSpeed > 100)
@@ -260,15 +258,16 @@ package oty
 			carSprite.rotation = car.GetAngle();
 			
 			rearWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
+			rearAxlePrismaticJoint.SetMaxMotorForce(Math.abs(600 * rearAxlePrismaticJoint.GetJointTranslation()));
+			rearAxlePrismaticJoint.SetMotorSpeed((rearAxlePrismaticJoint.GetMotorSpeed() - 2 * rearAxlePrismaticJoint.GetJointTranslation()));
 			frontWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
 			frontAxlePrismaticJoint.SetMaxMotorForce(Math.abs(600 * frontAxlePrismaticJoint.GetJointTranslation()));
 			frontAxlePrismaticJoint.SetMotorSpeed((frontAxlePrismaticJoint.GetMotorSpeed() - 2 * frontAxlePrismaticJoint.GetJointTranslation()));
-			rearAxlePrismaticJoint.SetMaxMotorForce(Math.abs(600 * rearAxlePrismaticJoint.GetJointTranslation()));
-			rearAxlePrismaticJoint.SetMotorSpeed((rearAxlePrismaticJoint.GetMotorSpeed() - 2 * rearAxlePrismaticJoint.GetJointTranslation()));
 		}
 		
 		public function get sprite():Sprite  { return carSprite; }
-		public function get box2dBody():b2Body { return car; }
+		
+		public function get box2dBody():b2Body  { return car; }
 		
 		public function metersToPixels(m:Number):Number
 		{
