@@ -53,12 +53,12 @@ package oty
 			
 			// ************************ THE FLOOR ************************ //
 			
-			floorWidthPx = stage.stageWidth * 2;
+			floorWidthPx = stage.stageWidth * 4;
 			floorHeightPx = 100;
-			floor = new StraightRamp(stage.stageWidth / 2, stage.stageHeight, floorWidthPx, floorHeightPx);
+			floor = new StraightRamp(floorWidthPx / 2, stage.stageHeight, floorWidthPx, floorHeightPx);
 			floor.addToWorld(STARLING_WORLD);
 			
-			new StraightRamp(stage.stageWidth, stage.stageHeight - floorHeightPx / 2, floorWidthPx / 4, floorHeightPx, -Math.PI / 12).addToWorld(STARLING_WORLD);
+			new StraightRamp(floorWidthPx / 2, stage.stageHeight - floorHeightPx / 2, 600, floorHeightPx, -Math.PI / 12).addToWorld(STARLING_WORLD);
 			
 			car = new DummyCar();
 			car.addToWorld(STARLING_WORLD);
