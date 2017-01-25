@@ -9,6 +9,7 @@ package oty
 	import Box2D.Dynamics.Joints.b2RevoluteJointDef;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2BodyDef;
+	import Box2D.Dynamics.b2Fixture;
 	import Box2D.Dynamics.b2FixtureDef;
 	import Box2D.Dynamics.b2World;
 	
@@ -22,6 +23,13 @@ package oty
 	 */
 	public class DummyCar
 	{
+		public static const CAR_BODY_NAME:String = "dummycar-body-car";
+		public static const TRUNK_BODY_NAME:String = "dummycar-body-trunk";
+		public static const HOOD_BODY_NAME:String = "dummycar-body-hood";
+		public static const FWHEEL_BODY_NAME:String = "dummycar-body-fwheel";
+		public static const RWHEEL_BODY_NAME:String = "dummycar-body-rwheel";
+		
+		
 		private var _box2dWorld:b2World;
 		private var _carBody:b2Body;
 		private var _carBodyDef:b2BodyDef;
@@ -121,7 +129,7 @@ package oty
 		
 		public function get sprite():Sprite  { return _carSprite; }
 		
-		public function get box2dBody():b2Body  { return _carBody; }
+		public function get body():b2Body  { return _carBody; }
 		
 		public function metersToPixels(m:Number):Number
 		{
@@ -140,12 +148,12 @@ package oty
 			var carShape:b2PolygonShape = new b2PolygonShape();
 			carShape.SetAsBox(pixelsToMeters(_carWidthPx / 2), pixelsToMeters(_carBaseHeightPx / 2));
 			// fixture
-			var carFixture:b2FixtureDef = new b2FixtureDef();
-			carFixture.density = 5;
-			carFixture.friction = 3;
-			carFixture.restitution = 0.3;
-			carFixture.filter.groupIndex = -1;
-			carFixture.shape = carShape;
+			var carFixtureDef:b2FixtureDef = new b2FixtureDef();
+			carFixtureDef.density = 5;
+			carFixtureDef.friction = 3;
+			carFixtureDef.restitution = 0.3;
+			carFixtureDef.filter.groupIndex = -1;
+			carFixtureDef.shape = carShape;
 			// body definition
 			_carBodyDef = new b2BodyDef();
 			_carBodyDef.type = b2Body.b2_dynamicBody;
@@ -158,12 +166,12 @@ package oty
 			var trunkCenter:b2Vec2 = new b2Vec2(pixelsToMeters(-80), pixelsToMeters(-60));
 			trunkShape.SetAsOrientedBox(pixelsToMeters(40), pixelsToMeters(40), trunkCenter);
 			// fixture
-			var trunkFixture:b2FixtureDef = new b2FixtureDef();
-			trunkFixture.density = 1;
-			trunkFixture.friction = 3;
-			trunkFixture.restitution = 0.3;
-			trunkFixture.filter.groupIndex = -1;
-			trunkFixture.shape = trunkShape;
+			var trunkFixtureDef:b2FixtureDef = new b2FixtureDef();
+			trunkFixtureDef.density = 1;
+			trunkFixtureDef.friction = 3;
+			trunkFixtureDef.restitution = 0.3;
+			trunkFixtureDef.filter.groupIndex = -1;
+			trunkFixtureDef.shape = trunkShape;
 			
 			// ************************ THE HOOD ************************ //
 			// shape
@@ -174,65 +182,72 @@ package oty
 			carVector[2] = new b2Vec2(pixelsToMeters(120), pixelsToMeters(-20));
 			hoodShape.SetAsVector(carVector, 3);
 			// fixture
-			var hoodFixture:b2FixtureDef = new b2FixtureDef();
-			hoodFixture.density = 1;
-			hoodFixture.friction = 3;
-			hoodFixture.restitution = 0.3;
-			hoodFixture.filter.groupIndex = -1;
-			hoodFixture.shape = hoodShape;
+			var hoodFixtureDef:b2FixtureDef = new b2FixtureDef();
+			hoodFixtureDef.density = 1;
+			hoodFixtureDef.friction = 3;
+			hoodFixtureDef.restitution = 0.3;
+			hoodFixtureDef.filter.groupIndex = -1;
+			hoodFixtureDef.shape = hoodShape;
 			
 			// ************************ MERGING ALL TOGETHER ************************ //
 			// the car itself
 			_carBody = _box2dWorld.CreateBody(_carBodyDef);
-			_carBody.CreateFixture(carFixture);
-			_carBody.CreateFixture(trunkFixture);
-			_carBody.CreateFixture(hoodFixture);
+			_carBody.CreateFixture(carFixtureDef);
+			var trunkFixture:b2Fixture = _carBody.CreateFixture(trunkFixtureDef);
+			var hoodFixture:b2Fixture = _carBody.CreateFixture(hoodFixtureDef);
+			
+			_carBody.SetUserData({name: CAR_BODY_NAME});
+			trunkFixture.GetBody().SetUserData({name: TRUNK_BODY_NAME});
+			hoodFixture.GetBody().SetUserData({name: HOOD_BODY_NAME});
 			
 			// ************************ THE AXLES ************************ //
 			// shape
 			var axleShape:b2PolygonShape = new b2PolygonShape();
 			axleShape.SetAsBox(pixelsToMeters(20), pixelsToMeters(20));
 			// fixture
-			var axleFixture:b2FixtureDef = new b2FixtureDef();
-			axleFixture.density = 0.5;
-			axleFixture.friction = 3;
-			axleFixture.restitution = 0.3;
-			axleFixture.shape = axleShape;
-			axleFixture.filter.groupIndex = -1;
+			var axleFixtureDef:b2FixtureDef = new b2FixtureDef();
+			axleFixtureDef.density = 0.5;
+			axleFixtureDef.friction = 3;
+			axleFixtureDef.restitution = 0.3;
+			axleFixtureDef.shape = axleShape;
+			axleFixtureDef.filter.groupIndex = -1;
 			// body definition
 			var axleBodyDef:b2BodyDef = new b2BodyDef();
 			axleBodyDef.type = b2Body.b2_dynamicBody;
 			// the rear axle itself
 			axleBodyDef.position.Set(_carBody.GetWorldCenter().x - pixelsToMeters(60), _carBody.GetWorldCenter().y + pixelsToMeters(65));
 			var rearAxle:b2Body = _box2dWorld.CreateBody(axleBodyDef);
-			rearAxle.CreateFixture(axleFixture);
+			rearAxle.CreateFixture(axleFixtureDef);
 			// the front axle itself
 			axleBodyDef.position.Set(_carBody.GetWorldCenter().x + pixelsToMeters(75), _carBody.GetWorldCenter().y + pixelsToMeters(65));
 			var frontAxle:b2Body = _box2dWorld.CreateBody(axleBodyDef);
-			frontAxle.CreateFixture(axleFixture);
+			frontAxle.CreateFixture(axleFixtureDef);
 			
 			// ************************ THE WHEELS ************************ //
 			// shape
 			_wheelShape = new b2CircleShape(pixelsToMeters(40));
 			trace("wheel radius: " + _wheelShape.GetRadius());
 			// fixture
-			var wheelFixture:b2FixtureDef = new b2FixtureDef();
-			wheelFixture.density = 1;
-			wheelFixture.friction = 3;
-			wheelFixture.restitution = 0.1;
-			wheelFixture.filter.groupIndex = -1;
-			wheelFixture.shape = _wheelShape;
+			var wheelFixtureDef:b2FixtureDef = new b2FixtureDef();
+			wheelFixtureDef.density = 1;
+			wheelFixtureDef.friction = 3;
+			wheelFixtureDef.restitution = 0.1;
+			wheelFixtureDef.filter.groupIndex = -1;
+			wheelFixtureDef.shape = _wheelShape;
 			// body definition
 			var wheelBodyDef:b2BodyDef = new b2BodyDef();
 			wheelBodyDef.type = b2Body.b2_dynamicBody;
 			// the real wheel itself
 			wheelBodyDef.position.Set(_carBody.GetWorldCenter().x - pixelsToMeters(60), _carBody.GetWorldCenter().y + pixelsToMeters(65));
 			_rearWheelBody = _box2dWorld.CreateBody(wheelBodyDef);
-			_rearWheelBody.CreateFixture(wheelFixture);
+			_rearWheelBody.CreateFixture(wheelFixtureDef);
 			// the front wheel itself
 			wheelBodyDef.position.Set(_carBody.GetWorldCenter().x + pixelsToMeters(75), _carBody.GetWorldCenter().y + pixelsToMeters(65));
 			_frontWheelBody = _box2dWorld.CreateBody(wheelBodyDef);
-			_frontWheelBody.CreateFixture(wheelFixture);
+			_frontWheelBody.CreateFixture(wheelFixtureDef);
+			
+			_frontWheelBody.SetUserData({name:FWHEEL_BODY_NAME});
+			_rearWheelBody.SetUserData({name:RWHEEL_BODY_NAME});
 			
 			// ************************ REVOLUTE JOINTS ************************ //
 			// rear joint

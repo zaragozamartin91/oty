@@ -50,15 +50,23 @@ package oty
 			//Starling.current.nativeOverlay.addChild(debugSprite)
 			
 			MainBox2dWorld.getInstance().debugDraw();
+			MainBox2dWorld.getInstance().world.SetContactListener( new MainBox2dContactListener() );
 			
 			// ************************ THE FLOOR ************************ //
 			
 			floorWidthPx = stage.stageWidth * 4;
 			floorHeightPx = 100;
 			floor = new StraightRamp(floorWidthPx / 2, stage.stageHeight, floorWidthPx, floorHeightPx);
+			floor.body.GetDefinition();
 			floor.addToWorld(STARLING_WORLD);
+			floor.body.SetUserData({
+				name: "floor"
+			});
 			
-			new StraightRamp(floorWidthPx / 2, stage.stageHeight - floorHeightPx / 2, 600, floorHeightPx, -Math.PI / 12).addToWorld(STARLING_WORLD);
+			var ramp:StraightRamp = new StraightRamp(floorWidthPx / 2, stage.stageHeight - floorHeightPx / 2, 600, floorHeightPx, -Math.PI / 12).addToWorld(STARLING_WORLD);
+			ramp.body.SetUserData({
+				name: "ramp"
+			});
 			
 			car = new DummyCar();
 			car.addToWorld(STARLING_WORLD);
@@ -176,11 +184,9 @@ package oty
 			switch (e.keyCode)
 			{
 			case 37: 
-				trace("LEFT");
 				car.goLeft();
 				break;
 			case 39: 
-				trace("RIGHT");
 				car.goRight();
 				break;
 			}

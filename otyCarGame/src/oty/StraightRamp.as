@@ -21,6 +21,8 @@ package oty
 		
 		public function get sprite()  { return _rampSprite; }
 		
+		public function get body()  { return _rampBody; }
+		
 		/**
 		 * Construye una rampa nueva.
 		 * @param xPx 		posicion x en pixeles.
@@ -43,10 +45,10 @@ package oty
 			rampFixture.restitution = 0;
 			rampFixture.shape = rampShape;
 			// body definition
-			var floorBodyDef:b2BodyDef = new b2BodyDef();
-			floorBodyDef.position.Set(pixelsToMeters(xPx), pixelsToMeters(yPx));
+			var rampBodyDef:b2BodyDef = new b2BodyDef();
+			rampBodyDef.position.Set(pixelsToMeters(xPx), pixelsToMeters(yPx));
 			// the floor itself
-			_rampBody = _box2dWorld.CreateBody(floorBodyDef);
+			_rampBody = _box2dWorld.CreateBody(rampBodyDef);
 			_rampBody.CreateFixture(rampFixture);
 			_rampBody.SetAngle(rotation);
 			
