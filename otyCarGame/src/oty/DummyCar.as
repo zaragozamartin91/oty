@@ -22,7 +22,7 @@ package oty
 	 * @author martin
 	 */
 	public class DummyCar
-	{		
+	{
 		private var _box2dWorld:b2World;
 		private var _carBody:b2Body;
 		private var _carBodyDef:b2BodyDef;
@@ -125,11 +125,26 @@ package oty
 		
 		public function get body():b2Body  { return _carBody; }
 		
-		public function setBodyPosition(xpx:Number, ypx:Number) {
+		/**
+		 *
+		 * Establece la posicion del auto. Por defecto establece la rotacion del auto y su velocidad angular y lineal en 0.
+		 *
+		 * @param xpx Posicion x en pixeles.
+		 * @param ypx Posicion y en pixeles.
+		 *
+		 * */
+		public function setBodyPosition(xpx:Number, ypx:Number)
+		{
 			var xms:Number = pixelsToMeters(xpx);
 			var yms:Number = pixelsToMeters(ypx);
 			_carBody.SetPosition(new b2Vec2(xms, yms));
-			
+			_carBody.SetLinearVelocity(new b2Vec2(0, 0));
+			_carBody.SetAngle(0);
+			_carBody.SetAngularVelocity(0);
+			_frontWheelBody.SetPosition(new b2Vec2(calculateFrontWheelOffsetXMts(), calculateFrontWheelOffsetYMts()));
+			_frontWheelBody.SetLinearVelocity(new b2Vec2(0, 0));
+			_rearWheelBody.SetPosition(new b2Vec2(calculateRearWheelOffsetXMts(), calculateRearWheelOffsetYMts()));
+			_rearWheelBody.SetLinearVelocity(new b2Vec2(0, 0));
 		}
 		
 		public function metersToPixels(m:Number):Number
@@ -240,16 +255,16 @@ package oty
 			wheelBodyDef.type = b2Body.b2_dynamicBody;
 			// the real wheel itself
 			// Body.getWorldCenter() is the center of gravity. Body.getPosition() is the center of the AABB
-			wheelBodyDef.position.Set(_carBody.GetWorldCenter().x - pixelsToMeters(60), _carBody.GetWorldCenter().y + pixelsToMeters(65));
+			wheelBodyDef.position.Set(calculateRearWheelOffsetXMts(), calculateRearWheelOffsetYMts());
 			_rearWheelBody = _box2dWorld.CreateBody(wheelBodyDef);
 			_rearWheelBody.CreateFixture(wheelFixtureDef);
 			// the front wheel itself
-			wheelBodyDef.position.Set(_carBody.GetWorldCenter().x + pixelsToMeters(75), _carBody.GetWorldCenter().y + pixelsToMeters(65));
+			wheelBodyDef.position.Set(calculateFrontWheelOffsetXMts(), calculateFrontWheelOffsetYMts());
 			_frontWheelBody = _box2dWorld.CreateBody(wheelBodyDef);
 			_frontWheelBody.CreateFixture(wheelFixtureDef);
 			
-			_frontWheelBody.SetUserData({name:NameLibrary.FWHEEL_BODY_NAME});
-			_rearWheelBody.SetUserData({name:NameLibrary.RWHEEL_BODY_NAME});
+			_frontWheelBody.SetUserData({name: NameLibrary.FWHEEL_BODY_NAME});
+			_rearWheelBody.SetUserData({name: NameLibrary.RWHEEL_BODY_NAME});
 			
 			// ************************ REVOLUTE JOINTS ************************ //
 			// rear joint
@@ -307,6 +322,26 @@ package oty
 			_carSprite.addChild(carImg);
 			_carSprite.alignPivot();
 		
+		}
+		
+		private function calculateRearWheelOffsetXMts():Number
+		{
+			return _carBody.GetWorldCenter().x - pixelsToMeters(60);
+		}
+		
+		private function calculateRearWheelOffsetYMts():Number
+		{
+			return _carBody.GetWorldCenter().y + pixelsToMeters(65);
+		}
+		
+		private function calculateFrontWheelOffsetXMts():Number
+		{
+			return _carBody.GetWorldCenter().x + pixelsToMeters(75);
+		}
+		
+		private function calculateFrontWheelOffsetYMts():Number
+		{
+			return _carBody.GetWorldCenter().y + pixelsToMeters(65);
 		}
 	}
 }

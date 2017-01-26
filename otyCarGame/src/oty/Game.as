@@ -195,7 +195,7 @@ package oty
 			var touchEnd:Touch = event.getTouch(this, TouchPhase.ENDED);
 			if (touchEnd)
 			{
-				car.body.SetPosition(new b2Vec2());
+				car.setBodyPosition(floorWidthPx / 4, 0);
 			}
 		}
 		
@@ -235,7 +235,7 @@ package oty
 			{
 				camera.setCenterX(car.sprite.x).setCenterY(car.sprite.y - 30);
 			}
-			
+		
 			// Body.getWorldCenter() is the center of gravity. Body.getPosition() is the center of the AABB
 			//trace("car.body.GetWorldCenter().x: " + car.body.GetWorldCenter().x + "|car.body.GetPosition().x: " + car.body.GetPosition().x);
 		}
