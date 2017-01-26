@@ -22,14 +22,7 @@ package oty
 	 * @author martin
 	 */
 	public class DummyCar
-	{
-		public static const CAR_BODY_NAME:String = "dummycar-body-car";
-		public static const TRUNK_BODY_NAME:String = "dummycar-body-trunk";
-		public static const HOOD_BODY_NAME:String = "dummycar-body-hood";
-		public static const FWHEEL_BODY_NAME:String = "dummycar-body-fwheel";
-		public static const RWHEEL_BODY_NAME:String = "dummycar-body-rwheel";
-		
-		
+	{		
 		private var _box2dWorld:b2World;
 		private var _carBody:b2Body;
 		private var _carBodyDef:b2BodyDef;
@@ -48,6 +41,7 @@ package oty
 		private var _carWidthPx:Number = 240;
 		private var _carHeightPx:Number = 120;
 		private var _carBaseHeightPx:Number = 40;
+		private var _wheelRadiusPx:Number = 40;
 		
 		private var _motorSpeed:Number = 0;
 		private var _left:Boolean;
@@ -59,7 +53,7 @@ package oty
 			
 			buildBox2dBody();
 			
-			buildStarlingBody();
+			buildStarlingSprites();
 		}
 		
 		public function addToWorld(starlingWorld:Sprite):void
@@ -131,6 +125,13 @@ package oty
 		
 		public function get body():b2Body  { return _carBody; }
 		
+		public function setBodyPosition(xpx:Number, ypx:Number) {
+			var xms:Number = pixelsToMeters(xpx);
+			var yms:Number = pixelsToMeters(ypx);
+			_carBody.SetPosition(new b2Vec2(xms, yms));
+			
+		}
+		
 		public function metersToPixels(m:Number):Number
 		{
 			return MainBox2dWorld.metersToPixels(m);
@@ -196,9 +197,9 @@ package oty
 			var trunkFixture:b2Fixture = _carBody.CreateFixture(trunkFixtureDef);
 			var hoodFixture:b2Fixture = _carBody.CreateFixture(hoodFixtureDef);
 			
-			_carBody.SetUserData({name: CAR_BODY_NAME});
-			trunkFixture.GetBody().SetUserData({name: TRUNK_BODY_NAME});
-			hoodFixture.GetBody().SetUserData({name: HOOD_BODY_NAME});
+			_carBody.SetUserData({name: NameLibrary.CAR_BODY_NAME});
+			trunkFixture.GetBody().SetUserData({name: NameLibrary.TRUNK_BODY_NAME});
+			hoodFixture.GetBody().SetUserData({name: NameLibrary.HOOD_BODY_NAME});
 			
 			// ************************ THE AXLES ************************ //
 			// shape
@@ -225,7 +226,7 @@ package oty
 			
 			// ************************ THE WHEELS ************************ //
 			// shape
-			_wheelShape = new b2CircleShape(pixelsToMeters(40));
+			_wheelShape = new b2CircleShape(pixelsToMeters(_wheelRadiusPx));
 			trace("wheel radius: " + _wheelShape.GetRadius());
 			// fixture
 			var wheelFixtureDef:b2FixtureDef = new b2FixtureDef();
@@ -238,6 +239,7 @@ package oty
 			var wheelBodyDef:b2BodyDef = new b2BodyDef();
 			wheelBodyDef.type = b2Body.b2_dynamicBody;
 			// the real wheel itself
+			// Body.getWorldCenter() is the center of gravity. Body.getPosition() is the center of the AABB
 			wheelBodyDef.position.Set(_carBody.GetWorldCenter().x - pixelsToMeters(60), _carBody.GetWorldCenter().y + pixelsToMeters(65));
 			_rearWheelBody = _box2dWorld.CreateBody(wheelBodyDef);
 			_rearWheelBody.CreateFixture(wheelFixtureDef);
@@ -246,8 +248,8 @@ package oty
 			_frontWheelBody = _box2dWorld.CreateBody(wheelBodyDef);
 			_frontWheelBody.CreateFixture(wheelFixtureDef);
 			
-			_frontWheelBody.SetUserData({name:FWHEEL_BODY_NAME});
-			_rearWheelBody.SetUserData({name:RWHEEL_BODY_NAME});
+			_frontWheelBody.SetUserData({name:NameLibrary.FWHEEL_BODY_NAME});
+			_rearWheelBody.SetUserData({name:NameLibrary.RWHEEL_BODY_NAME});
 			
 			// ************************ REVOLUTE JOINTS ************************ //
 			// rear joint
@@ -279,7 +281,7 @@ package oty
 		
 		}
 		
-		private function buildStarlingBody():void
+		private function buildStarlingSprites():void
 		{
 			// ************************ SPRITES ************************ //
 			var wheelTexture:Texture = TextureRepository.getInstance().wheelTexture;

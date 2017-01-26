@@ -4,6 +4,8 @@ package oty
 	
 	public class TextureRepository
 	{
+		private static const UNIQUE_ID:Number = Math.random();
+		
 		[Embed(source = "img/forward-button.png")]
 		public static const ForwardButtonBmp:Class;
 		[Embed(source = "img/wheel.png")]
@@ -14,45 +16,46 @@ package oty
 		public static const OtyBmp:Class;
 		[Embed(source = "img/wood-texture.jpg")]
 		public static const WoodBmp:Class;
+		[Embed(source = "img/reset-button.png")]
+		public static const ResetButtonBmp:Class;
 		
-		private static var _instance:TextureRepository;
+		private static var $instance:TextureRepository;
+		
 		private var _moveButtonTexture:Texture;
-		
-		public function get moveButtonTexture():Texture  { return _moveButtonTexture; }
 		private var _wheelTexture:Texture;
-		
-		public function get wheelTexture():Texture  { return _wheelTexture; }
 		private var _carTexture:Texture;
-		
-		public function get carTexture():Texture  { return _carTexture; }
 		private var _otyLogoTexture:Texture;
-		
-		public function get otyLogoTexture():Texture  { return _otyLogoTexture; }
 		private var _woodTexture:Texture;
+		private var _resetButtonTexture:Texture;
 		
 		public function get woodTexture():Texture  { return _woodTexture; }
-		private static var _allowInstantiation:Boolean;
+		
+		public function get otyLogoTexture():Texture  { return _otyLogoTexture; }
+		
+		public function get carTexture():Texture  { return _carTexture; }
+		
+		public function get wheelTexture():Texture  { return _wheelTexture; }
+		
+		public function get moveButtonTexture():Texture  { return _moveButtonTexture; }
+		
+		public function get resetButtonTexture():Texture {return _resetButtonTexture; }
 		
 		public static function getInstance():TextureRepository
 		{
-			if (!_instance)
-			{
-				_allowInstantiation = true;
-				_instance = new TextureRepository();
-				_allowInstantiation = false;
-			}
-			return _instance;
+			$instance = $instance ? $instance : new TextureRepository(UNIQUE_ID);
+			return $instance;
 		}
 		
-		public function TextureRepository():void
+		public function TextureRepository(uniqueId:Number):void
 		{
-			if (_allowInstantiation)
+			if (UNIQUE_ID == uniqueId)
 			{
 				_moveButtonTexture = Texture.fromEmbeddedAsset(ForwardButtonBmp);
 				_wheelTexture = Texture.fromEmbeddedAsset(WheelBmp);
 				_carTexture = Texture.fromEmbeddedAsset(CarBmp);
 				_otyLogoTexture = Texture.fromEmbeddedAsset(OtyBmp);
 				_woodTexture = Texture.fromEmbeddedAsset(WoodBmp);
+				_resetButtonTexture = Texture.fromEmbeddedAsset(ResetButtonBmp);
 			}
 			else
 			{

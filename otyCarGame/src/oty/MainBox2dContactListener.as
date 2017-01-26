@@ -8,7 +8,8 @@ package oty
 	import Box2D.Dynamics.b2ContactListener;
 	
 	/**
-	 * ...
+	 * Manejador de colisiones de cuerpos de box2d.
+	 * 
 	 * @author martin
 	 */
 	public class MainBox2dContactListener extends b2ContactListener

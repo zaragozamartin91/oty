@@ -29,8 +29,6 @@ package oty
 		
 		private var buttonSpacing:Number;
 		
-		private var moveButtonTexture:Texture;
-		
 		private var floor:StraightRamp;
 		private var floorWidthPx:Number;
 		private var floorHeightPx:Number;
@@ -50,7 +48,7 @@ package oty
 			//Starling.current.nativeOverlay.addChild(debugSprite)
 			
 			MainBox2dWorld.getInstance().debugDraw();
-			MainBox2dWorld.getInstance().world.SetContactListener( new MainBox2dContactListener() );
+			MainBox2dWorld.getInstance().world.SetContactListener(new MainBox2dContactListener());
 			
 			// ************************ THE FLOOR ************************ //
 			
@@ -59,14 +57,10 @@ package oty
 			floor = new StraightRamp(floorWidthPx / 2, stage.stageHeight, floorWidthPx, floorHeightPx);
 			floor.body.GetDefinition();
 			floor.addToWorld(STARLING_WORLD);
-			floor.body.SetUserData({
-				name: "floor"
-			});
+			floor.body.SetUserData({name: NameLibrary.FLOOR_BODY_NAME});
 			
 			var ramp:StraightRamp = new StraightRamp(floorWidthPx / 2, stage.stageHeight - floorHeightPx / 2, 600, floorHeightPx, -Math.PI / 12).addToWorld(STARLING_WORLD);
-			ramp.body.SetUserData({
-				name: "ramp"
-			});
+			ramp.body.SetUserData({name: NameLibrary.RAMP_BODY_NAME});
 			
 			car = new DummyCar();
 			car.addToWorld(STARLING_WORLD);
@@ -85,10 +79,12 @@ package oty
 			otyTween.animate("rotation", Math.PI * 2);
 			Starling.juggler.add(otyTween);
 			
-			moveButtonTexture = TextureRepository.getInstance().moveButtonTexture;
+			/* BUTTONS ----------------------------------------------------------------------------------------------------- */
+			
 			buttonSpacing = stage.stageHeight * 0.05;
 			addForwardButton();
 			addBackButton();
+			addResetButton();
 			
 			this.addChild(STARLING_WORLD);
 			
@@ -106,7 +102,7 @@ package oty
 		
 		private function addForwardButton():void
 		{
-			var buttonImg:Image = new Image(moveButtonTexture);
+			var buttonImg:Image = new Image(TextureRepository.getInstance().moveButtonTexture);
 			var buttonSprite:Sprite = new Sprite();
 			buttonSprite.addChild(buttonImg);
 			
@@ -122,7 +118,7 @@ package oty
 		
 		private function addBackButton():void
 		{
-			var buttonImg:Image = new Image(moveButtonTexture);
+			var buttonImg:Image = new Image(TextureRepository.getInstance().moveButtonTexture);
 			var buttonSprite:Sprite = new Sprite();
 			buttonSprite.addChild(buttonImg);
 			buttonSprite.rotation = Math.PI;
@@ -130,14 +126,29 @@ package oty
 			buttonSprite.width = stage.stageWidth * 0.15;
 			buttonSprite.height = stage.stageWidth * 0.15;
 			/* la separacion es de buttonSprite.width * 1.1 debido a que la rotacion de 180° provoca un "desplazamiento" del boton a la izquierda. */
-			buttonSprite.x = stage.stageWidth - buttonSprite.width * 1.1 - buttonSpacing;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width - buttonSpacing * 2;
 			buttonSprite.y = buttonSprite.height + buttonSpacing;
 			
 			buttonSprite.addEventListener(TouchEvent.TOUCH, onBackButtonTouch);
 			
 			addChild(buttonSprite);
 		}
-	
+		
+		private function addResetButton():void
+		{
+			var buttonImg:Image = new Image(TextureRepository.getInstance().resetButtonTexture);
+			var buttonSprite:Sprite = new Sprite();
+			buttonSprite.addChild(buttonImg);
+			
+			buttonSprite.width = stage.stageWidth * 0.15;
+			buttonSprite.height = stage.stageWidth * 0.15;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width * 3 - buttonSpacing * 3;
+			buttonSprite.y = buttonSpacing;
+			
+			buttonSprite.addEventListener(TouchEvent.TOUCH, onResetButtonTouch);
+			
+			addChild(buttonSprite);
+		}
 		
 		private function onForwardButtonTouch(event:TouchEvent):void
 		{
@@ -179,6 +190,15 @@ package oty
 			}
 		}
 		
+		private function onResetButtonTouch(event:TouchEvent):void
+		{
+			var touchEnd:Touch = event.getTouch(this, TouchPhase.ENDED);
+			if (touchEnd)
+			{
+				car.body.SetPosition(new b2Vec2());
+			}
+		}
+		
 		private function keyPressed(e:KeyboardEvent):void
 		{
 			switch (e.keyCode)
@@ -215,6 +235,9 @@ package oty
 			{
 				camera.setCenterX(car.sprite.x).setCenterY(car.sprite.y - 30);
 			}
+			
+			// Body.getWorldCenter() is the center of gravity. Body.getPosition() is the center of the AABB
+			//trace("car.body.GetWorldCenter().x: " + car.body.GetWorldCenter().x + "|car.body.GetPosition().x: " + car.body.GetPosition().x);
 		}
 		
 		public static function metersToPixels(m:Number):Number

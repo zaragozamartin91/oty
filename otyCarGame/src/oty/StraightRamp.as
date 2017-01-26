@@ -19,9 +19,9 @@ package oty
 		private var _rampBody:b2Body;
 		private var _box2dWorld:b2World;
 		
-		public function get sprite()  { return _rampSprite; }
+		public function get sprite():Sprite  { return _rampSprite; }
 		
-		public function get body()  { return _rampBody; }
+		public function get body():b2Body  { return _rampBody; }
 		
 		/**
 		 * Construye una rampa nueva.
