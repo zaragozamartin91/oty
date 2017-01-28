@@ -48,7 +48,25 @@ package oty
 			//Starling.current.nativeOverlay.addChild(debugSprite)
 			
 			MainBox2dWorld.getInstance().debugDraw();
-			MainBox2dWorld.getInstance().world.SetContactListener(new MainBox2dContactListener());
+			MainBox2dWorld.getInstance().world.SetContactListener(MainBox2dContactListener.getInstance());
+			
+			var tumbleCollisionAction:CollisionAction = new CollisionAction(function(body1:b2Body, body2:b2Body):Boolean
+			{
+				var carBody:b2Body = body1.GetUserData().name == NameLibrary.CAR_BODY_NAME ? body1 : null;
+				carBody = body2.GetUserData().name == NameLibrary.CAR_BODY_NAME ? body2 : carBody;
+				if (carBody)
+				{
+					trace("CAR/TRUNK/HOOD BODY ANGLE: " + carBody.GetAngle());
+					return carBody.GetAngle() > Math.PI / 2 && carBody.GetAngle() < 3 * Math.PI / 2;
+				}
+				return false;
+			}, function(body1, body2):void
+			{
+				trace("CAR TUMBLE");
+				resetCar();
+			});
+			
+			MainBox2dContactListener.getInstance().addBeginContactAction(tumbleCollisionAction);
 			
 			// ************************ THE FLOOR ************************ //
 			
@@ -195,8 +213,12 @@ package oty
 			var touchEnd:Touch = event.getTouch(this, TouchPhase.ENDED);
 			if (touchEnd)
 			{
-				car.setBodyPosition(floorWidthPx / 4, 0);
+				resetCar();
 			}
+		}
+		
+		private function resetCar():void {
+			car.setBodyPosition(floorWidthPx / 4, 0);
 		}
 		
 		private function keyPressed(e:KeyboardEvent):void

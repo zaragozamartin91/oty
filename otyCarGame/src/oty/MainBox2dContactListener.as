@@ -4,20 +4,52 @@ package oty
 	import Box2D.Collision.b2ContactPoint;
 	import Box2D.Collision.b2Manifold;
 	import Box2D.Dynamics.Contacts.b2Contact;
+	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2ContactImpulse;
 	import Box2D.Dynamics.b2ContactListener;
 	
 	/**
 	 * Manejador de colisiones de cuerpos de box2d.
-	 * 
+	 *
 	 * @author martin
 	 */
 	public class MainBox2dContactListener extends b2ContactListener
 	{
+		private static const UNIQUE_ID:Number = Math.random();
+		private static var $instance:MainBox2dContactListener;
 		
-		public function MainBox2dContactListener()
+		private var _beginContactActions:Vector.<CollisionAction>;
+		private var _endContactActions:Vector.<CollisionAction>;
+		
+		public static function getInstance():MainBox2dContactListener
 		{
+			$instance = $instance ? $instance : new MainBox2dContactListener(UNIQUE_ID);
+			return $instance;
+		}
 		
+		public function MainBox2dContactListener(uniqueId:Number)
+		{
+			if (UNIQUE_ID == uniqueId)
+			{
+				_beginContactActions = new Vector.<CollisionAction>();
+				_endContactActions = new Vector.<CollisionAction>();
+			}
+			else
+			{
+				throw new Error("CLASE SINGLETON! USAR getInstance");
+			}
+		}
+		
+		public function addBeginContactAction(action:CollisionAction):MainBox2dContactListener
+		{
+			_beginContactActions.push(action);
+			return this;
+		}
+		
+		public function addEndContactAction(action:CollisionAction):MainBox2dContactListener
+		{
+			_endContactActions.push(action);
+			return this;
 		}
 		
 		/**
@@ -25,9 +57,13 @@ package oty
 		 */
 		override public function BeginContact(contact:b2Contact):void
 		{
-			var bodyName1 = contact.GetFixtureA().GetBody().GetUserData() ? contact.GetFixtureA().GetBody().GetUserData().name : "UNKNOWN";
-			var bodyName2 = contact.GetFixtureB().GetBody().GetUserData() ? contact.GetFixtureB().GetBody().GetUserData().name : "UNKNOWN";
-			trace("COLLISION BETWEEN " + bodyName1 + " AND " + bodyName2);
+			_beginContactActions.forEach(function(action:CollisionAction, i, vec):void
+			{
+				var body1:b2Body = contact.GetFixtureA().GetBody();
+				var body2:b2Body = contact.GetFixtureB().GetBody();
+				//trace("CHECKING COLLISION BETWEEN " + body1.GetUserData().name + " AND " + body2.GetUserData().name);
+				action.performIfCollisionOk(body1, body2);
+			}, this);
 		}
 		
 		/**
@@ -35,7 +71,12 @@ package oty
 		 */
 		override public function EndContact(contact:b2Contact):void
 		{
-		
+			_endContactActions.forEach(function(action:CollisionAction, i, vec):void
+			{
+				var body1:b2Body = contact.GetFixtureA().GetBody();
+				var body2:b2Body = contact.GetFixtureB().GetBody();
+				action.performIfCollisionOk(body1, body2);
+			}, this);
 		}
 		
 		/**

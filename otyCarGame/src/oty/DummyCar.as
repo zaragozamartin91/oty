@@ -213,8 +213,11 @@ package oty
 			var hoodFixture:b2Fixture = _carBody.CreateFixture(hoodFixtureDef);
 			
 			_carBody.SetUserData({name: NameLibrary.CAR_BODY_NAME});
-			trunkFixture.GetBody().SetUserData({name: NameLibrary.TRUNK_BODY_NAME});
-			hoodFixture.GetBody().SetUserData({name: NameLibrary.HOOD_BODY_NAME});
+			//trunkFixture.GetBody().SetUserData({name: NameLibrary.TRUNK_BODY_NAME});
+			//hoodFixture.GetBody().SetUserData({name: NameLibrary.HOOD_BODY_NAME});
+			
+			trunkFixture.GetBody().SetUserData({name: NameLibrary.CAR_BODY_NAME});
+			hoodFixture.GetBody().SetUserData({name: NameLibrary.CAR_BODY_NAME});
 			
 			// ************************ THE AXLES ************************ //
 			// shape
