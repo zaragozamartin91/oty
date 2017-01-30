@@ -217,8 +217,11 @@ package oty
 			}
 		}
 		
-		private function resetCar():void {
-			car.setBodyPosition(floorWidthPx / 4, 0);
+		private function resetCar():void
+		{
+			var xpx:Number = floorWidthPx / 4;
+			var ypx:Number = 0;
+			car.tweenToPosition(xpx, ypx);
 		}
 		
 		private function keyPressed(e:KeyboardEvent):void

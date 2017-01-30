@@ -12,6 +12,8 @@ package oty
 	import Box2D.Dynamics.b2Fixture;
 	import Box2D.Dynamics.b2FixtureDef;
 	import Box2D.Dynamics.b2World;
+	import starling.animation.Tween;
+	import starling.core.Starling;
 	
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -128,12 +130,13 @@ package oty
 		/**
 		 *
 		 * Establece la posicion del auto. Por defecto establece la rotacion del auto y su velocidad angular y lineal en 0.
+		 * Los valores de posicion se deben indicar en pixeles.
 		 *
 		 * @param xpx Posicion x en pixeles.
 		 * @param ypx Posicion y en pixeles.
 		 *
 		 * */
-		public function setBodyPosition(xpx:Number, ypx:Number)
+		public function setBodyPosition(xpx:Number, ypx:Number):void
 		{
 			var xms:Number = pixelsToMeters(xpx);
 			var yms:Number = pixelsToMeters(ypx);
@@ -145,6 +148,23 @@ package oty
 			_frontWheelBody.SetLinearVelocity(new b2Vec2(0, 0));
 			_rearWheelBody.SetPosition(new b2Vec2(calculateRearWheelOffsetXMts(), calculateRearWheelOffsetYMts()));
 			_rearWheelBody.SetLinearVelocity(new b2Vec2(0, 0));
+		}
+		
+		/** Anima el auto hacia una posicion.
+		 * @param xpx Posicion en x en pixeles.
+		 * @param ypx Posicion en y en pixeles.
+		 * @param time Tiempo que debe demorar la animacion.*/
+		public function tweenToPosition(xpx:Number, ypx:Number, time:Number = 1):void
+		{
+			var carTween:Tween = new Tween(this._carSprite, time);
+			
+			carTween.moveTo(xpx, ypx);
+			carTween.onUpdate = function():void
+			{
+				setBodyPosition(xpx, ypx);
+			};
+			
+			Starling.juggler.add(carTween);
 		}
 		
 		public function metersToPixels(m:Number):Number
