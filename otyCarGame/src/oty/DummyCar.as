@@ -25,6 +25,11 @@ package oty
 	 */
 	public class DummyCar
 	{
+		public static const RAXLE_DEFAULT_OFFSET_X:Number = 60;
+		public static const RAXLE_DEFAULT_OFFSET_Y:Number = 65;
+		public static const FAXLE_DEFAULT_OFFSET_X:Number = 75;
+		public static const FAXLE_DEFAULT_OFFSET_Y:Number = 65;
+		
 		private var _box2dWorld:b2World;
 		private var _carBody:b2Body;
 		private var _carBodyDef:b2BodyDef;
@@ -39,6 +44,12 @@ package oty
 		private var _frontWheelSprite:Sprite;
 		private var _rearWheelSprite:Sprite;
 		private var _carSprite:Sprite;
+		
+		/* SEPARACIONES DE LOS EJES GIRATORIOS DE LAS RUEDAS RESPECTO DEL CUERPO DEL AUTO */
+		private var _raxleOffsetX:Number = RAXLE_DEFAULT_OFFSET_X;
+		private var _raxleOffsetY:Number = RAXLE_DEFAULT_OFFSET_Y;
+		private var _faxleOffsetX:Number = FAXLE_DEFAULT_OFFSET_X;
+		private var _faxleOffsetY:Number = FAXLE_DEFAULT_OFFSET_Y;
 		
 		private var _carWidthPx:Number = 240;
 		private var _carHeightPx:Number = 120;
@@ -254,11 +265,13 @@ package oty
 			var axleBodyDef:b2BodyDef = new b2BodyDef();
 			axleBodyDef.type = b2Body.b2_dynamicBody;
 			// the rear axle itself
-			axleBodyDef.position.Set(_carBody.GetWorldCenter().x - pixelsToMeters(60), _carBody.GetWorldCenter().y + pixelsToMeters(65));
+			
+			axleBodyDef.position.Set(_carBody.GetWorldCenter().x - pixelsToMeters(_raxleOffsetX), _carBody.GetWorldCenter().y + pixelsToMeters(_raxleOffsetY));
 			var rearAxle:b2Body = _box2dWorld.CreateBody(axleBodyDef);
 			rearAxle.CreateFixture(axleFixtureDef);
 			// the front axle itself
-			axleBodyDef.position.Set(_carBody.GetWorldCenter().x + pixelsToMeters(75), _carBody.GetWorldCenter().y + pixelsToMeters(65));
+			
+			axleBodyDef.position.Set(_carBody.GetWorldCenter().x + pixelsToMeters(_faxleOffsetX), _carBody.GetWorldCenter().y + pixelsToMeters(_faxleOffsetY));
 			var frontAxle:b2Body = _box2dWorld.CreateBody(axleBodyDef);
 			frontAxle.CreateFixture(axleFixtureDef);
 			
@@ -349,22 +362,22 @@ package oty
 		
 		private function calculateRearWheelOffsetXMts():Number
 		{
-			return _carBody.GetWorldCenter().x - pixelsToMeters(60);
+			return _carBody.GetWorldCenter().x - pixelsToMeters(_raxleOffsetX);
 		}
 		
 		private function calculateRearWheelOffsetYMts():Number
 		{
-			return _carBody.GetWorldCenter().y + pixelsToMeters(65);
+			return _carBody.GetWorldCenter().y + pixelsToMeters(_raxleOffsetY);
 		}
 		
 		private function calculateFrontWheelOffsetXMts():Number
 		{
-			return _carBody.GetWorldCenter().x + pixelsToMeters(75);
+			return _carBody.GetWorldCenter().x + pixelsToMeters(_faxleOffsetX);
 		}
 		
 		private function calculateFrontWheelOffsetYMts():Number
 		{
-			return _carBody.GetWorldCenter().y + pixelsToMeters(65);
+			return _carBody.GetWorldCenter().y + pixelsToMeters(_faxleOffsetY);
 		}
 	}
 }

@@ -81,7 +81,7 @@ package oty
 			
 			// ************************ STAGE BUILD ************************ //
 			
-			var stageBuilder:TestStageBuilder = new TestStageBuilder(stage, STARLING_WORLD);
+			var stageBuilder:TestStageBuilder = new TestStageBuilder(stage, STARLING_WORLD, floorWidthPx, floorHeightPx);
 			stageBuilder.buildStage();
 			
 			car = new DummyCar();
