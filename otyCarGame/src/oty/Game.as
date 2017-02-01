@@ -52,8 +52,10 @@ package oty
 			
 			var tumbleCollisionAction:CollisionAction = new CollisionAction(function(body1:b2Body, body2:b2Body):Boolean
 			{
-				var carBody:b2Body = body1.GetUserData().name == NameLibrary.CAR_BODY_NAME ? body1 : null;
-				carBody = body2.GetUserData().name == NameLibrary.CAR_BODY_NAME ? body2 : carBody;
+				var body1UserData:* = body1.GetUserData() ? body1.GetUserData() : {};
+				var body2UserData:* = body2.GetUserData() ? body2.GetUserData() : {};
+				var carBody:b2Body = body1UserData.name == NameLibrary.CAR_BODY_NAME ? body1 : null;
+				carBody = body2UserData.name == NameLibrary.CAR_BODY_NAME ? body2 : carBody;
 				if (carBody)
 				{
 					trace("CAR/TRUNK/HOOD BODY ANGLE: " + carBody.GetAngle());
@@ -77,8 +79,10 @@ package oty
 			floor.addToWorld(STARLING_WORLD);
 			floor.body.SetUserData({name: NameLibrary.FLOOR_BODY_NAME});
 			
-			var ramp:StraightRamp = new StraightRamp(floorWidthPx / 2, stage.stageHeight - floorHeightPx / 2, 600, floorHeightPx, -Math.PI / 12).addToWorld(STARLING_WORLD);
-			ramp.body.SetUserData({name: NameLibrary.RAMP_BODY_NAME});
+			// ************************ STAGE BUILD ************************ //
+			
+			var stageBuilder:TestStageBuilder = new TestStageBuilder(stage, STARLING_WORLD);
+			stageBuilder.buildStage();
 			
 			car = new DummyCar();
 			car.addToWorld(STARLING_WORLD);
