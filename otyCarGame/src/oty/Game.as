@@ -262,7 +262,8 @@ package oty
 			
 			if (camera)
 			{
-				camera.setCenterX(car.sprite.x).setCenterY(car.sprite.y - 30);
+				var cameraPos:* = car.sprite ? {x: car.sprite.x, y: car.sprite.y - 30} : camera.getCenter();
+				camera.setCenterX(cameraPos.x).setCenterY(cameraPos.y - 30);
 			}
 		
 			// Body.getWorldCenter() is the center of gravity. Body.getPosition() is the center of the AABB

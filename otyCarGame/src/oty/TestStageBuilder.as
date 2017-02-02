@@ -48,6 +48,12 @@ package oty
 			rampWidth = 900;
 			
 			addRamp(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
+			
+			rampWidth = 1200;
+			rampPosX = rampPosX + rampWidth;
+			rampPosY = rampPosY + rampHeight * 3;
+			
+			addRamp(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
 		}
 		
 		private function addRamp(rampPosX:Number, rampPosY:Number, rampWidth:Number, rampHeight:Number, rampAngle:Number):void

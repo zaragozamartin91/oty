@@ -79,7 +79,7 @@ package oty
 			return this;
 		}
 		
-		/** 
+		/**
 		 * Establece la posicion en x del objetivo POR DEFECTO de la camara. Esta funcion no aplica si el objetivo de la camara fue modificado mediante changeTarget.
 		 * @param x Nueva posicion en x del objetivo POR DEFECTO de la camara en pixeles.
 		 * */
@@ -89,7 +89,7 @@ package oty
 			return this;
 		}
 		
-		/** 
+		/**
 		 * Establece la posicion en y del objetivo POR DEFECTO de la camara. Esta funcion no aplica si el objetivo de la camara fue modificado mediante changeTarget.
 		 * @param y Nueva posicion en y del objetivo POR DEFECTO de la camara en pixeles.
 		 * */
@@ -97,6 +97,15 @@ package oty
 		{
 			_cameraCenter.y = y;
 			return this;
+		}
+		
+		/**
+		 * Obtiene el centro de la camara.
+		 * @return Posicion x e y del centro de la camara en pixeles.
+		 * */
+		public function getCenter():*
+		{
+			return {x: _cameraCenter.x, y: _cameraCenter.y}
 		}
 	}
 
