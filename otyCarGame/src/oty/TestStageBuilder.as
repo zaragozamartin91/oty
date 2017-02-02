@@ -22,7 +22,7 @@ package oty
 			_floorHeightPx = floorHeightPx || 100;
 		}
 		
-		public function buildStage()
+		public function buildStage():void
 		{
 			var rampPosX:Number = _floorWidthPx / 2;
 			var rampPosY:Number = _stage.stageHeight - _floorHeightPx / 2;
