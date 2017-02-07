@@ -25,10 +25,10 @@ package oty
 	 */
 	public class DummyCar
 	{
-		public static const RAXLE_DEFAULT_OFFSET_X:Number = 60;
-		public static const RAXLE_DEFAULT_OFFSET_Y:Number = 65;
-		public static const FAXLE_DEFAULT_OFFSET_X:Number = 75;
-		public static const FAXLE_DEFAULT_OFFSET_Y:Number = 65;
+		public static const RAXLE_DEFAULT_OFFSET_X_PX:Number = 60;
+		public static const RAXLE_DEFAULT_OFFSET_Y_PX:Number = 65;
+		public static const FAXLE_DEFAULT_OFFSET_X_PX:Number = 75;
+		public static const FAXLE_DEFAULT_OFFSET_Y_PX:Number = 65;
 		
 		private var _box2dWorld:b2World;
 		private var _carBody:b2Body;
@@ -46,10 +46,10 @@ package oty
 		private var _carSprite:Sprite;
 		
 		/* SEPARACIONES DE LOS EJES GIRATORIOS DE LAS RUEDAS RESPECTO DEL CUERPO DEL AUTO */
-		private var _raxleOffsetX:Number = RAXLE_DEFAULT_OFFSET_X;
-		private var _raxleOffsetY:Number = RAXLE_DEFAULT_OFFSET_Y;
-		private var _faxleOffsetX:Number = FAXLE_DEFAULT_OFFSET_X;
-		private var _faxleOffsetY:Number = FAXLE_DEFAULT_OFFSET_Y;
+		private var _raxleOffsetXPx:Number = RAXLE_DEFAULT_OFFSET_X_PX;
+		private var _raxleOffsetYPx:Number = RAXLE_DEFAULT_OFFSET_Y_PX;
+		private var _faxleOffsetXPx:Number = FAXLE_DEFAULT_OFFSET_X_PX;
+		private var _faxleOffsetYPx:Number = FAXLE_DEFAULT_OFFSET_Y_PX;
 		
 		private var _carWidthPx:Number = 240;
 		private var _carHeightPx:Number = 120;
@@ -63,10 +63,8 @@ package oty
 		public function DummyCar(box2dWorld:b2World = null)
 		{
 			this._box2dWorld = box2dWorld ? box2dWorld : MainBox2dWorld.getInstance().world;
-			
 			buildBox2dBody();
-			
-			buildStarlingSprites();
+			buildSprites();
 		}
 		
 		public function addToWorld(starlingWorld:Sprite):void
@@ -180,10 +178,10 @@ package oty
 			var xms:Number = pixelsToMeters(xpx);
 			var yms:Number = pixelsToMeters(ypx);
 			var fwTween:Tween = new Tween(_frontWheelSprite, time);
-			fwTween.moveTo(metersToPixels(xms + pixelsToMeters(_faxleOffsetX)), metersToPixels(yms + pixelsToMeters(_faxleOffsetY)));
+			fwTween.moveTo(metersToPixels(xms + pixelsToMeters(_faxleOffsetXPx)), metersToPixels(yms + pixelsToMeters(_faxleOffsetYPx)));
 			
 			var rwTween:Tween = new Tween(_rearWheelSprite, time);
-			rwTween.moveTo(metersToPixels(xms - pixelsToMeters(_raxleOffsetX)), metersToPixels(yms + pixelsToMeters(_raxleOffsetY)));
+			rwTween.moveTo(metersToPixels(xms - pixelsToMeters(_raxleOffsetXPx)), metersToPixels(yms + pixelsToMeters(_raxleOffsetYPx)));
 			Starling.juggler.add(fwTween);
 			Starling.juggler.add(rwTween);
 		}
@@ -276,12 +274,12 @@ package oty
 			axleBodyDef.type = b2Body.b2_dynamicBody;
 			// the rear axle itself
 			
-			axleBodyDef.position.Set(_carBody.GetWorldCenter().x - pixelsToMeters(_raxleOffsetX), _carBody.GetWorldCenter().y + pixelsToMeters(_raxleOffsetY));
+			axleBodyDef.position.Set(_carBody.GetWorldCenter().x - pixelsToMeters(_raxleOffsetXPx), _carBody.GetWorldCenter().y + pixelsToMeters(_raxleOffsetYPx));
 			var rearAxle:b2Body = _box2dWorld.CreateBody(axleBodyDef);
 			rearAxle.CreateFixture(axleFixtureDef);
 			// the front axle itself
 			
-			axleBodyDef.position.Set(_carBody.GetWorldCenter().x + pixelsToMeters(_faxleOffsetX), _carBody.GetWorldCenter().y + pixelsToMeters(_faxleOffsetY));
+			axleBodyDef.position.Set(_carBody.GetWorldCenter().x + pixelsToMeters(_faxleOffsetXPx), _carBody.GetWorldCenter().y + pixelsToMeters(_faxleOffsetYPx));
 			var frontAxle:b2Body = _box2dWorld.CreateBody(axleBodyDef);
 			frontAxle.CreateFixture(axleFixtureDef);
 			
@@ -342,7 +340,7 @@ package oty
 		
 		}
 		
-		private function buildStarlingSprites():void
+		private function buildSprites():void
 		{
 			// ************************ SPRITES ************************ //
 			var wheelTexture:Texture = TextureRepository.getInstance().wheelTexture;
@@ -372,22 +370,22 @@ package oty
 		
 		private function calculateRearWheelOffsetXMts():Number
 		{
-			return _carBody.GetWorldCenter().x - pixelsToMeters(_raxleOffsetX);
+			return _carBody.GetWorldCenter().x - pixelsToMeters(_raxleOffsetXPx);
 		}
 		
 		private function calculateRearWheelOffsetYMts():Number
 		{
-			return _carBody.GetWorldCenter().y + pixelsToMeters(_raxleOffsetY);
+			return _carBody.GetWorldCenter().y + pixelsToMeters(_raxleOffsetYPx);
 		}
 		
 		private function calculateFrontWheelOffsetXMts():Number
 		{
-			return _carBody.GetWorldCenter().x + pixelsToMeters(_faxleOffsetX);
+			return _carBody.GetWorldCenter().x + pixelsToMeters(_faxleOffsetXPx);
 		}
 		
 		private function calculateFrontWheelOffsetYMts():Number
 		{
-			return _carBody.GetWorldCenter().y + pixelsToMeters(_faxleOffsetY);
+			return _carBody.GetWorldCenter().y + pixelsToMeters(_faxleOffsetYPx);
 		}
 	}
 }

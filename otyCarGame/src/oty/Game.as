@@ -233,7 +233,7 @@ package oty
 		private function resetCar():void
 		{
 			var xpx:Number = floorWidthPx / 4;
-			var ypx:Number = car.sprite.y - car.sprite.height;
+			var ypx:Number = floor.sprite.y - floor.sprite.height - car.sprite.height * 2;
 			car.tweenToPosition(xpx, ypx);
 		}
 		
