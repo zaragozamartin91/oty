@@ -67,7 +67,7 @@ package oty
 			}, function(body1, body2):void
 			{
 				trace("CAR TUMBLE");
-				resetCar();
+				restoreCar();
 			});
 			
 			MainBox2dContactListener.getInstance().addBeginContactAction(tumbleCollisionAction);
@@ -223,10 +223,17 @@ package oty
 			}
 		}
 		
+		private function restoreCar():void
+		{
+			var xpx:Number = car.sprite.x;
+			var ypx:Number = car.sprite.y - car.sprite.height;
+			car.tweenToPosition(xpx, ypx);
+		}
+		
 		private function resetCar():void
 		{
 			var xpx:Number = floorWidthPx / 4;
-			var ypx:Number = 0;
+			var ypx:Number = car.sprite.y - car.sprite.height;
 			car.tweenToPosition(xpx, ypx);
 		}
 		

@@ -167,15 +167,25 @@ package oty
 		 * @param time Tiempo que debe demorar la animacion.*/
 		public function tweenToPosition(xpx:Number, ypx:Number, time:Number = 1):void
 		{
-			var carTween:Tween = new Tween(this._carSprite, time);
-			
+			var carTween:Tween = new Tween(_carSprite, time);
 			carTween.moveTo(xpx, ypx);
+			carTween.rotateTo(Math.PI * 2);
 			carTween.onUpdate = function():void
 			{
 				setBodyPosition(xpx, ypx);
 			};
 			
 			Starling.juggler.add(carTween);
+			
+			var xms:Number = pixelsToMeters(xpx);
+			var yms:Number = pixelsToMeters(ypx);
+			var fwTween:Tween = new Tween(_frontWheelSprite, time);
+			fwTween.moveTo(metersToPixels(xms + pixelsToMeters(_faxleOffsetX)), metersToPixels(yms + pixelsToMeters(_faxleOffsetY)));
+			
+			var rwTween:Tween = new Tween(_rearWheelSprite, time);
+			rwTween.moveTo(metersToPixels(xms - pixelsToMeters(_raxleOffsetX)), metersToPixels(yms + pixelsToMeters(_raxleOffsetY)));
+			Starling.juggler.add(fwTween);
+			Starling.juggler.add(rwTween);
 		}
 		
 		public function metersToPixels(m:Number):Number
