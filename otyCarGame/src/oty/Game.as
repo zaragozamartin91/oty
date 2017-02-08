@@ -115,7 +115,7 @@ package oty
 			/* CAMERA ----------------------------------------------------------------------------------------------------- */
 			
 			MainCamera.buildNew(STARLING_WORLD, stage.stageWidth, stage.stageHeight);
-			camera = MainCamera.getInstance().addToWorld(this);
+			camera = MainCamera.getInstance().setOffset(0,-30).setTarget(car.sprite).addToWorld(this);
 			
 			/* LISTENERS ----------------------------------------------------------------------------------------------------- */
 			
@@ -271,8 +271,7 @@ package oty
 			
 			if (camera)
 			{
-				cameraPos = car.sprite ? {x: car.sprite.x, y: car.sprite.y - 30} : camera.getCenter();
-				camera.setCenterX(cameraPos.x).setCenterY(cameraPos.y);
+				camera.update();
 			}
 		
 			// Body.getWorldCenter() is the center of gravity. Body.getPosition() is the center of the AABB

@@ -171,6 +171,7 @@ package oty
 			carTween.onUpdate = function():void
 			{
 				setBodyPosition(xpx, ypx);
+				MainCamera.getInstance().update();
 			};
 			
 			Starling.juggler.add(carTween);

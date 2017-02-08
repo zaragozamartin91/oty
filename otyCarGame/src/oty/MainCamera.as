@@ -16,6 +16,8 @@ package oty
 		
 		private var _camera:Fluocam;
 		private var _cameraCenter:Sprite;
+		private var _target:Sprite;
+		private var _offset:* = {x: 0, y: 0};
 		
 		/**
 		 * Construye una nueva camara. La misma reemplaza a la instancia previa de camara. Se debe acceder a la nueva camara mediante getInstance.
@@ -55,6 +57,11 @@ package oty
 			}
 		}
 		
+		/**
+		 * Agrega la camara al escenario de starling.
+		 * @param	obj Sprite escenario.
+		 * @return this
+		 */
 		public function addToWorld(obj:Sprite):MainCamera
 		{
 			obj.addChild(_camera);
@@ -64,48 +71,34 @@ package oty
 		/**
 		 * Cambia el objetivo original de la camara. La camara por defecto tiene un objetivo el cual debe moverse manualmente mediante funciones de esta misma clase (setCenterX y setCenterY).
 		 * */
-		public function changeTarget(sprite:Sprite):MainCamera
+		public function setTarget(sprite:Sprite):MainCamera
 		{
-			_camera.changeTarget(sprite);
+			_target = sprite;
 			return this;
 		}
 		
 		/**
-		 * Reestablece la camara a su objetivo original.
-		 * */
-		public function resetTarget():MainCamera
+		 * Establece una distancia entre el objetivo y la camara.
+		 * @param	x Distancia horizontal en pixeles.
+		 * @param	y Distancia vertical en pixeles.
+		 * @return this
+		 */
+		public function setOffset(x:Number, y:Number):MainCamera
 		{
-			_camera.changeTarget(_cameraCenter);
+			_offset.x = x;
+			_offset.y = y;
 			return this;
 		}
 		
 		/**
-		 * Establece la posicion en x del objetivo POR DEFECTO de la camara. Esta funcion no aplica si el objetivo de la camara fue modificado mediante changeTarget.
-		 * @param x Nueva posicion en x del objetivo POR DEFECTO de la camara en pixeles.
-		 * */
-		public function setCenterX(x:Number):MainCamera
+		 * Actualiza el estado de la camara.
+		 * @return this
+		 */
+		public function update():MainCamera
 		{
-			_cameraCenter.x = x;
+			_cameraCenter.x = _target.x + _offset.x;
+			_cameraCenter.y = _target.y + _offset.y;
 			return this;
-		}
-		
-		/**
-		 * Establece la posicion en y del objetivo POR DEFECTO de la camara. Esta funcion no aplica si el objetivo de la camara fue modificado mediante changeTarget.
-		 * @param y Nueva posicion en y del objetivo POR DEFECTO de la camara en pixeles.
-		 * */
-		public function setCenterY(y:Number):MainCamera
-		{
-			_cameraCenter.y = y;
-			return this;
-		}
-		
-		/**
-		 * Obtiene el centro de la camara.
-		 * @return Posicion x e y del centro de la camara en pixeles.
-		 * */
-		public function getCenter():*
-		{
-			return {x: _cameraCenter.x, y: _cameraCenter.y}
 		}
 	}
 
