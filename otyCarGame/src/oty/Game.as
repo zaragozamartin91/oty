@@ -86,8 +86,12 @@ package oty
 			var stageBuilder:TestStageBuilder = new TestStageBuilder(stage, STARLING_WORLD, floorWidthPx, floorHeightPx);
 			stageBuilder.buildStage();
 			
+			// ************************ CAR ************************ //
+			
 			car = new DummyCar();
 			car.addToWorld(STARLING_WORLD);
+			
+			// ************************ INTRO ANIMATION ************************ //
 			
 			var otyTexture:Texture = TextureRepository.getInstance().otyLogoTexture;
 			var otySprite:Sprite = new Sprite();
@@ -103,7 +107,7 @@ package oty
 			otyTween.animate("rotation", Math.PI * 2);
 			Starling.juggler.add(otyTween);
 			
-			/* BUTTONS ----------------------------------------------------------------------------------------------------- */
+			// ************************ BUTTONS ************************ //
 			
 			buttonSpacing = stage.stageHeight * 0.05;
 			addForwardButton();
@@ -112,12 +116,12 @@ package oty
 			
 			this.addChild(STARLING_WORLD);
 			
-			/* CAMERA ----------------------------------------------------------------------------------------------------- */
+			// ************************ CAMERA ************************ //
 			
 			MainCamera.buildNew(STARLING_WORLD, stage.stageWidth, stage.stageHeight);
 			camera = MainCamera.getInstance().setOffset(0,-30).setTarget(car.sprite).addToWorld(this);
 			
-			/* LISTENERS ----------------------------------------------------------------------------------------------------- */
+			// ************************ LISTENERS ************************ //
 			
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
 			this.stage.addEventListener(KeyboardEvent.KEY_UP, keyReleased);
