@@ -77,7 +77,7 @@ package oty
 			
 			// ************************ BACKGROUND ************************ //
 			
-			_background = new Background(stage.stageWidth, stage.stageHeight);
+			_background = Background.buildNew(stage.stageWidth, stage.stageHeight);
 			this.addChild(_background);
 			
 			// ************************ THE FLOOR ************************ //
