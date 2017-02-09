@@ -5,37 +5,40 @@ package oty
 	import starling.display.Sprite;
 	
 	/**
-	 * ...
+	 * Fondo scroleable.
 	 * @author martin
 	 */
 	public class Background extends Sprite
 	{
-		private var bg:Image;
-		private var rect:Rectangle;
+		private var _bg:Image;
+		private var _rect:Rectangle;
 		
 		public function Background(widthPx:Number, heightPx:Number)
 		{
 			super();
 			
-			rect = new Rectangle();
+			_rect = new Rectangle();
 			
-			bg = new Image(TextureRepository.getInstance().backgroundTexture);
-			//bg.alignPivot();
-			//bg.x = widthPx / 2;
-			//bg.y = heightPx / 2 ;
-			bg.height = heightPx;
-			bg.width = widthPx;
-			bg.tileGrid = rect;
+			_bg = new Image(TextureRepository.getInstance().backgroundTexture);
+			_bg.height = heightPx;
+			_bg.width = widthPx;
+			_bg.tileGrid = _rect;
 			
-			addChild(bg);
+			addChild(_bg);
 		}
 		
-		public function update(_dt:Number, speedXPx:Number, speedYPx:Number):void
+		public function updateFromVel(dt:Number, speedXPx:Number, speedYPx:Number):void
 		{
-			rect.x -= _dt * speedXPx;
-			rect.y -= rect.y < -250 ? 0 : _dt * speedYPx / 2;
-			trace("rect.y:" + rect.y);
-			bg.tileGrid = rect;
+			var distXPx:Number = dt * speedXPx;
+			var distYPx:Number = dt * speedYPx / 2;
+			updateFromDist(distXPx, distYPx);
+		}
+		
+		public function updateFromDist(distXPx:Number, distYPx:Number):void
+		{
+			_rect.x -= distXPx;
+			_rect.y -= _rect.y < -250 ? 0 : distYPx;
+			_bg.tileGrid = _rect;
 		}
 	}
 

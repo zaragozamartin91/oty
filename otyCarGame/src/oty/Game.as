@@ -288,7 +288,7 @@ package oty
 			
 			var vxpx:Number = metersToPixels(car.body.GetLinearVelocity().x);
 			var vypx:Number = metersToPixels(car.body.GetLinearVelocity().y);
-			_background.update(time, vxpx, vypx);
+			_background.updateFromVel(time, vxpx, vypx);
 		}
 		
 		public static function metersToPixels(m:Number):Number
