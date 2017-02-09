@@ -30,17 +30,18 @@ package oty
 		
 		private var _background:Background;
 		
-		private var buttonSpacing:Number;
+		private var _buttonSpacing:Number;
 		
-		private var floor:StraightRamp;
-		private var floorWidthPx:Number;
-		private var floorHeightPx:Number;
+		private var _floor:StraightRamp;
+		private var _floorWidthPx:Number;
+		private var _floorHeightPx:Number;
 		
-		private var car:DummyCar;
+		private var _car:DummyCar;
+		private var _carPrevPosXPx:Number = 0;
+		private var _carPrevPosYPx:Number = 0;
 		
-		private var camera:MainCamera;
-		
-		private var cameraPos:*;
+		private var _camera:MainCamera;
+		private var _cameraPos:*;
 		
 		public function Game():void
 		{
@@ -82,22 +83,24 @@ package oty
 			
 			// ************************ THE FLOOR ************************ //
 			
-			floorWidthPx = stage.stageWidth * 4;
-			floorHeightPx = 100;
-			floor = new StraightRamp(floorWidthPx / 2, stage.stageHeight, floorWidthPx, floorHeightPx);
-			floor.body.GetDefinition();
-			floor.addToWorld(STARLING_WORLD);
-			floor.body.SetUserData({name: NameLibrary.FLOOR_BODY_NAME});
+			_floorWidthPx = stage.stageWidth * 4;
+			_floorHeightPx = 100;
+			_floor = new StraightRamp(_floorWidthPx / 2, stage.stageHeight, _floorWidthPx, _floorHeightPx);
+			_floor.body.GetDefinition();
+			_floor.addToWorld(STARLING_WORLD);
+			_floor.body.SetUserData({name: NameLibrary.FLOOR_BODY_NAME});
 			
 			// ************************ STAGE BUILD ************************ //
 			
-			var stageBuilder:TestStageBuilder = new TestStageBuilder(stage, STARLING_WORLD, floorWidthPx, floorHeightPx);
+			var stageBuilder:TestStageBuilder = new TestStageBuilder(stage, STARLING_WORLD, _floorWidthPx, _floorHeightPx);
 			stageBuilder.buildStage();
 			
 			// ************************ CAR ************************ //
 			
-			car = new DummyCar();
-			car.addToWorld(STARLING_WORLD);
+			_car = new DummyCar();
+			_car.addToWorld(STARLING_WORLD);
+			_carPrevPosXPx = _car.sprite.x;
+			_carPrevPosYPx = _car.sprite.y;
 			
 			// ************************ INTRO ANIMATION ************************ //
 			
@@ -119,7 +122,7 @@ package oty
 			
 			// ************************ BUTTONS ************************ //
 			
-			buttonSpacing = stage.stageHeight * 0.05;
+			_buttonSpacing = stage.stageHeight * 0.05;
 			addForwardButton();
 			addBackButton();
 			addResetButton();
@@ -127,7 +130,7 @@ package oty
 			// ************************ CAMERA ************************ //
 			
 			MainCamera.buildNew(STARLING_WORLD, stage.stageWidth, stage.stageHeight);
-			camera = MainCamera.getInstance().setOffset(0, -30).setTarget(car.sprite).addToWorld(this);
+			_camera = MainCamera.getInstance().setOffset(0, -30).setTarget(_car.sprite).addToWorld(this);
 			
 			// ************************ LISTENERS ************************ //
 			
@@ -144,8 +147,8 @@ package oty
 			
 			buttonSprite.width = stage.stageWidth * 0.15;
 			buttonSprite.height = stage.stageWidth * 0.15;
-			buttonSprite.x = stage.stageWidth - buttonSprite.width - buttonSpacing;
-			buttonSprite.y = buttonSpacing;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width - _buttonSpacing;
+			buttonSprite.y = _buttonSpacing;
 			
 			buttonSprite.addEventListener(TouchEvent.TOUCH, onForwardButtonTouch);
 			
@@ -162,8 +165,8 @@ package oty
 			buttonSprite.width = stage.stageWidth * 0.15;
 			buttonSprite.height = stage.stageWidth * 0.15;
 			/* la separacion es de buttonSprite.width * 1.1 debido a que la rotacion de 180° provoca un "desplazamiento" del boton a la izquierda. */
-			buttonSprite.x = stage.stageWidth - buttonSprite.width - buttonSpacing * 2;
-			buttonSprite.y = buttonSprite.height + buttonSpacing;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width - _buttonSpacing * 2;
+			buttonSprite.y = buttonSprite.height + _buttonSpacing;
 			
 			buttonSprite.addEventListener(TouchEvent.TOUCH, onBackButtonTouch);
 			
@@ -178,8 +181,8 @@ package oty
 			
 			buttonSprite.width = stage.stageWidth * 0.15;
 			buttonSprite.height = stage.stageWidth * 0.15;
-			buttonSprite.x = stage.stageWidth - buttonSprite.width * 3 - buttonSpacing * 3;
-			buttonSprite.y = buttonSpacing;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width * 3 - _buttonSpacing * 3;
+			buttonSprite.y = _buttonSpacing;
 			
 			buttonSprite.addEventListener(TouchEvent.TOUCH, onResetButtonTouch);
 			
@@ -194,7 +197,7 @@ package oty
 			{
 				var touchPosStart:Point = touchBegan.getLocation(this);
 				trace("Touched object at position: " + touchPosStart);
-				car.goRight();
+				_car.goRight();
 			}
 			
 			var touchEnd:Touch = event.getTouch(this, TouchPhase.ENDED);
@@ -202,7 +205,7 @@ package oty
 			{
 				var touchPosEnd:Point = touchEnd.getLocation(this);
 				trace("Stopped touching object at position: " + touchPosEnd);
-				car.stopRight();
+				_car.stopRight();
 			}
 		}
 		
@@ -214,7 +217,7 @@ package oty
 			{
 				var touchPosStart:Point = touchBegan.getLocation(this);
 				trace("Touched object at position: " + touchPosStart);
-				car.goLeft();
+				_car.goLeft();
 			}
 			
 			var touchEnd:Touch = event.getTouch(this, TouchPhase.ENDED);
@@ -222,7 +225,7 @@ package oty
 			{
 				var touchPosEnd:Point = touchEnd.getLocation(this);
 				trace("Stopped touching object at position: " + touchPosEnd);
-				car.stopLeft();
+				_car.stopLeft();
 			}
 		}
 		
@@ -237,16 +240,16 @@ package oty
 		
 		private function restoreCar():void
 		{
-			var xpx:Number = car.sprite.x;
-			var ypx:Number = car.sprite.y - car.sprite.height;
-			car.tweenToPosition(xpx, ypx);
+			var xpx:Number = _car.sprite.x;
+			var ypx:Number = _car.sprite.y - _car.sprite.height;
+			_car.tweenToPosition(xpx, ypx);
 		}
 		
 		private function resetCar():void
 		{
-			var xpx:Number = floorWidthPx / 4;
-			var ypx:Number = floor.sprite.y - floor.sprite.height - car.sprite.height * 2;
-			car.tweenToPosition(xpx, ypx);
+			var xpx:Number = _floorWidthPx / 4;
+			var ypx:Number = _floor.sprite.y - _floor.sprite.height - _car.sprite.height * 2;
+			_car.tweenToPosition(xpx, ypx);
 		}
 		
 		private function keyPressed(e:KeyboardEvent):void
@@ -254,10 +257,10 @@ package oty
 			switch (e.keyCode)
 			{
 			case 37: 
-				car.goLeft();
+				_car.goLeft();
 				break;
 			case 39: 
-				car.goRight();
+				_car.goRight();
 				break;
 			}
 		}
@@ -267,28 +270,29 @@ package oty
 			switch (e.keyCode)
 			{
 			case 37: 
-				car.stopLeft();
+				_car.stopLeft();
 				break;
 			case 39: 
-				car.stopRight();
+				_car.stopRight();
 				break;
 			}
+		
 		}
 		
 		// este metodo sera invocado en cada frame
 		private function updateWorld(e:Event, time:Number):void
 		{
-			car.update(time);
+			_car.update(time);
 			MainBox2dWorld.getInstance().update();
 			
-			if (camera)
+			if (_camera)
 			{
-				camera.update();
+				_camera.update();
 			}
 			
-			var vxpx:Number = metersToPixels(car.body.GetLinearVelocity().x);
-			var vypx:Number = metersToPixels(car.body.GetLinearVelocity().y);
-			_background.updateFromVel(time, vxpx, vypx);
+			_background.updateFromDist(_car.sprite.x - _carPrevPosXPx, _car.sprite.y - _carPrevPosYPx, 2, 3);
+			_carPrevPosXPx = _car.sprite.x;
+			_carPrevPosYPx = _car.sprite.y;
 		}
 		
 		public static function metersToPixels(m:Number):Number

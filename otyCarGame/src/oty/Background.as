@@ -5,14 +5,14 @@ package oty
 	import starling.display.Sprite;
 	
 	/**
-	 * Fondo scroleable.
+	 * Fondo desplazable.
 	 * @author martin
 	 */
 	public class Background extends Sprite
 	{
 		private static const UNIQUE_ID:Number = Math.random();
 		
-		private static var $instance;
+		private static var $instance:Background;
 		
 		private var _bg:Image;
 		private var _rect:Rectangle;
@@ -57,18 +57,32 @@ package oty
 		
 		}
 		
-		public function updateFromVel(dt:Number, speedXPx:Number, speedYPx:Number):void
+		/**
+		 * Actualiza el desplazamiento del fondo a partir de una distancia medida en pixeles.
+		 * @param	distXPx Distancia horizontal.
+		 * @param	distYPx Distancia vertical.
+		 * @param 	xfactor Factor divisor de ditancia horizontal.
+		 * @param	yfactor Factor divisor de distancia vertical.
+		 */
+		public function updateFromDist(distXPx:Number, distYPx:Number, xfactor:Number = 1, yfactor:Number = 1):void
 		{
-			var distXPx:Number = dt * speedXPx;
-			var distYPx:Number = dt * speedYPx / 2;
-			updateFromDist(distXPx, distYPx);
-		}
-		
-		public function updateFromDist(distXPx:Number, distYPx:Number):void
-		{
-			_rect.x -= distXPx;
-			_rect.y -= _rect.y < -250 ? 0 : distYPx;
+			_rect.x -= distXPx / xfactor;
+			
+			if (_rect.y < -250)
+			{
+				_rect.y = -250;
+			}
+			else if (_rect.y > 100)
+			{
+				_rect.y = 100;
+			}
+			else
+			{
+				_rect.y -= distYPx / yfactor;
+			}
+			
 			_bg.tileGrid = _rect;
+			trace("_rect.y:" + _rect.y);
 		}
 	}
 

@@ -168,8 +168,9 @@ package oty
 			var carTween:Tween = new Tween(_carSprite, time);
 			carTween.moveTo(xpx, ypx);
 			carTween.rotateTo(Math.PI * 2);
+			
 			carTween.onUpdate = function():void
-			{
+			{			
 				setBodyPosition(xpx, ypx);
 				MainCamera.getInstance().update();
 			};
