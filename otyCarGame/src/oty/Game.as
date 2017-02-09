@@ -56,16 +56,28 @@ package oty
 			MainBox2dWorld.getInstance().debugDraw();
 			MainBox2dWorld.getInstance().world.SetContactListener(MainBox2dContactListener.getInstance());
 			
+			// ************************ COLLISION ************************ //
+			
 			var tumbleCollisionAction:CollisionAction = new CollisionAction(function(body1:b2Body, body2:b2Body):Boolean
 			{
-				var body1UserData:* = body1.GetUserData() ? body1.GetUserData() : {};
-				var body2UserData:* = body2.GetUserData() ? body2.GetUserData() : {};
-				var carBody:b2Body = body1UserData.name == NameLibrary.CAR_BODY_NAME ? body1 : null;
-				carBody = body2UserData.name == NameLibrary.CAR_BODY_NAME ? body2 : carBody;
+				var body1UserData:* = body1.GetUserData() || {};
+				var body2UserData:* = body2.GetUserData() || {};
+				
+				var carBody:b2Body;
+				var otherBody:b2Body;
+				if (body1UserData.name == NameLibrary.CAR_BODY_NAME) {
+					carBody = body1;
+					otherBody = body2;
+				} else if (body2UserData.name == NameLibrary.CAR_BODY_NAME) {
+					carBody = body2;
+					otherBody = body1;
+				}
+				
 				if (carBody)
 				{
-					trace("CAR/TRUNK/HOOD BODY ANGLE: " + carBody.GetAngle());
-					return carBody.GetAngle() > Math.PI / 2 && carBody.GetAngle() < 3 * Math.PI / 2;
+					var angleDiff = Math.abs( carBody.GetAngle() - otherBody.GetAngle() );
+					trace("angleDiff: " +  radToDeg(angleDiff) + "°" );
+					return radToDeg(angleDiff) >= 80;
 				}
 				return false;
 			}, function(body1, body2):void
@@ -303,6 +315,10 @@ package oty
 		public static function pixelsToMeters(p:Number):Number
 		{
 			return MainBox2dWorld.pixelsToMeters(p);
+		}
+		
+		public static function radToDeg(rad:Number):Number {
+			return 180 * rad / Math.PI;
 		}
 	}
 }
