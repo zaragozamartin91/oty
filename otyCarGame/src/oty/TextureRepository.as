@@ -18,6 +18,8 @@ package oty
 		public static const WoodBmp:Class;
 		[Embed(source = "img/reset-button.png")]
 		public static const ResetButtonBmp:Class;
+		[Embed(source="img/mario-background_2.gif")]
+		public static const BackgroundBmp:Class;
 		
 		private static var $instance:TextureRepository;
 		
@@ -27,6 +29,7 @@ package oty
 		private var _otyLogoTexture:Texture;
 		private var _woodTexture:Texture;
 		private var _resetButtonTexture:Texture;
+		private var _backgroundTexture:Texture;
 		
 		public function get woodTexture():Texture  { return _woodTexture; }
 		
@@ -39,6 +42,8 @@ package oty
 		public function get moveButtonTexture():Texture  { return _moveButtonTexture; }
 		
 		public function get resetButtonTexture():Texture {return _resetButtonTexture; }
+		
+		public function get backgroundTexture():Texture {return _backgroundTexture; }
 		
 		public static function getInstance():TextureRepository
 		{
@@ -56,6 +61,8 @@ package oty
 				_otyLogoTexture = Texture.fromEmbeddedAsset(OtyBmp);
 				_woodTexture = Texture.fromEmbeddedAsset(WoodBmp);
 				_resetButtonTexture = Texture.fromEmbeddedAsset(ResetButtonBmp);
+				_backgroundTexture = Texture.fromEmbeddedAsset(BackgroundBmp);
+				
 			}
 			else
 			{

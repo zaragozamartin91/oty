@@ -8,6 +8,7 @@ package oty
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
+	import starling.extensions.krecha.ScrollImage;
 	import starling.textures.Texture;
 	import starling.utils.Color;
 	import starling.core.Starling;
@@ -26,6 +27,8 @@ package oty
 	public class Game extends starling.display.Sprite
 	{
 		public static const STARLING_WORLD:Sprite = new Sprite();
+		
+		private var _background:Background;
 		
 		private var buttonSpacing:Number;
 		
@@ -72,6 +75,11 @@ package oty
 			
 			MainBox2dContactListener.getInstance().addBeginContactAction(tumbleCollisionAction);
 			
+			// ************************ BACKGROUND ************************ //
+			
+			_background = new Background(stage.stageWidth, stage.stageHeight);
+			this.addChild(_background);
+			
 			// ************************ THE FLOOR ************************ //
 			
 			floorWidthPx = stage.stageWidth * 4;
@@ -107,6 +115,8 @@ package oty
 			otyTween.animate("rotation", Math.PI * 2);
 			Starling.juggler.add(otyTween);
 			
+			this.addChild(STARLING_WORLD);
+			
 			// ************************ BUTTONS ************************ //
 			
 			buttonSpacing = stage.stageHeight * 0.05;
@@ -114,12 +124,10 @@ package oty
 			addBackButton();
 			addResetButton();
 			
-			this.addChild(STARLING_WORLD);
-			
 			// ************************ CAMERA ************************ //
 			
 			MainCamera.buildNew(STARLING_WORLD, stage.stageWidth, stage.stageHeight);
-			camera = MainCamera.getInstance().setOffset(0,-30).setTarget(car.sprite).addToWorld(this);
+			camera = MainCamera.getInstance().setOffset(0, -30).setTarget(car.sprite).addToWorld(this);
 			
 			// ************************ LISTENERS ************************ //
 			
@@ -277,9 +285,10 @@ package oty
 			{
 				camera.update();
 			}
-		
-			// Body.getWorldCenter() is the center of gravity. Body.getPosition() is the center of the AABB
-			//trace("car.body.GetWorldCenter().x: " + car.body.GetWorldCenter().x + "|car.body.GetPosition().x: " + car.body.GetPosition().x);
+			
+			var vxpx:Number = metersToPixels(car.body.GetLinearVelocity().x);
+			var vypx:Number = metersToPixels(car.body.GetLinearVelocity().y);
+			_background.update(time, vxpx, vypx);
 		}
 		
 		public static function metersToPixels(m:Number):Number
