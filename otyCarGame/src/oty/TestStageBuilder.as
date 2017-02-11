@@ -29,14 +29,12 @@ package oty
 			var rampWidth:Number = 600;
 			var rampHeight:Number = _floorHeightPx;
 			var rampAngle:Number = -Math.PI / 12;
-			
 			addRamp(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
 			
 			rampPosX = _floorWidthPx;
 			rampPosY = rampPosY - rampHeight;
 			rampWidth = 1200;
 			rampAngle = -Math.PI / 12;
-			
 			addRamp(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
 			
 			rampAngle = Math.abs(rampAngle);
@@ -46,14 +44,20 @@ package oty
 			rampPosY = rampPosY - rampLenY / 2;
 			rampAngle = 0;
 			rampWidth = 900;
-			
 			addRamp(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
 			
 			rampWidth = 1200;
 			rampPosX = rampPosX + rampWidth;
 			rampPosY = rampPosY + rampHeight * 3;
-			
 			addRamp(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
+			
+			rampAngle = Math.PI / 6;
+			rampPosX += Math.abs( rampWidth * Math.cos(rampAngle) ) + 130;
+			rampPosY += Math.abs( rampWidth * Math.sin(rampAngle) ) / 2;
+			addRamp(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
+			
+			rampPosX += Math.abs( rampWidth * Math.cos(rampAngle) );
+			rampPosY += Math.abs( rampWidth * Math.sin(rampAngle) ) / 2;
 		}
 		
 		private function addRamp(rampPosX:Number, rampPosY:Number, rampWidth:Number, rampHeight:Number, rampAngle:Number):void

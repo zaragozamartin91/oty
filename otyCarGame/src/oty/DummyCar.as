@@ -46,9 +46,9 @@ package oty
 		private var _carSprite:Sprite;
 		
 		/* SEPARACIONES DE LOS EJES GIRATORIOS DE LAS RUEDAS RESPECTO DEL CUERPO DEL AUTO */
-		private var _raxleOffsetXPx:Number = RAXLE_DEFAULT_OFFSET_X_PX;
+		private var _raxleOffsetXPx:Number = RAXLE_DEFAULT_OFFSET_X_PX + 10;
 		private var _raxleOffsetYPx:Number = RAXLE_DEFAULT_OFFSET_Y_PX;
-		private var _faxleOffsetXPx:Number = FAXLE_DEFAULT_OFFSET_X_PX;
+		private var _faxleOffsetXPx:Number = FAXLE_DEFAULT_OFFSET_X_PX + 10;
 		private var _faxleOffsetYPx:Number = FAXLE_DEFAULT_OFFSET_Y_PX;
 		
 		private var _carWidthPx:Number = 240;
