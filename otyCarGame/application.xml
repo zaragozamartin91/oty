@@ -10,13 +10,13 @@
     <systemChrome>standard</systemChrome>
     <transparent>false</transparent>
     <visible>true</visible>
-    <minimizable>true</minimizable>
-    <maximizable>true</maximizable>
+    <minimizable>false</minimizable>
+    <maximizable>false</maximizable>
     <resizable>false</resizable>
     <renderMode>direct</renderMode>
     <aspectRatio>landscape</aspectRatio>
     <autoOrients>true</autoOrients>
-    <depthAndStencil>true</depthAndStencil>
+    <depthAndStencil>false</depthAndStencil>
     <minSize>1360 768</minSize>
     <maxSize>1360 768</maxSize>
     <width>1360</width>
@@ -27,5 +27,6 @@
 	More options:
 	http://livedocs.adobe.com/flex/3/html/File_formats_1.html#1043413
 	-->
+  <supportedProfiles>desktop mobileDevice</supportedProfiles>
   
 </application>

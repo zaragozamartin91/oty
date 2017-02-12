@@ -12,20 +12,28 @@ package oty
 		
 		public function Main()
 		{
-			Starling.multitouchEnabled = true
+			var multitouchEnabled = false;
+			Starling.multitouchEnabled = multitouchEnabled;
 			
 			var screenWidth:int = stage.fullScreenWidth;
 			var screenHeight:int = stage.fullScreenHeight;
+			/* EL VIEWPORT ES EL RANGO DE DIBUJO DE LA PANTALLA */
 			var viewPort:Rectangle = new Rectangle(0, 0, screenWidth, screenHeight);
 			trace("viewPort: " + viewPort);
+			var screenRatio:Number = screenWidth / screenHeight;
+			trace("screenRatio: " + screenRatio);
 			
 			_starling = new Starling(Game, stage, viewPort);
-			_starling.stage.stageWidth = 800;
-			_starling.stage.stageHeight = 600;
+			/* EL STAGEWIDTH Y STAGEHEIGHT DEL STAGE DE STARLING ESTABLECEN LOS LIMITES DEL SISTEMA DE COORDENADAS DEL JUEGO */
+			_starling.stage.stageWidth = 1000;
+			_starling.stage.stageHeight = Math.ceil(_starling.stage.stageWidth / screenRatio);
+			trace("_starling.stage.stageWidth: " + _starling.stage.stageWidth);
+			trace("_starling.stage.stageHeight: " + _starling.stage.stageHeight);
 			
 			_starling.showStats = true;
+			
 			/*Permite probar la funcionalidad multitouch en pcs de escritorio*/
-			_starling.simulateMultitouch = true;
+			_starling.simulateMultitouch = multitouchEnabled;
 			
 			_starling.addEventListener(Event.ROOT_CREATED, rootCreated);
 			

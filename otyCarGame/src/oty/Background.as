@@ -16,10 +16,14 @@ package oty
 		
 		private var _bg:Image;
 		private var _rect:Rectangle;
+		private var _upperBoundYPx:Number;
+		private var _lowerBoundYPx:Number;
 		
-		public static function buildNew(widthPx:Number, heightPx:Number):Background
+		public static function buildNew(widthPx:Number, heightPx:Number, upperBoundYPx:Number=100, lowerBoundYPx:Number=250):Background
 		{
 			$instance = new Background(UNIQUE_ID, widthPx, heightPx);
+			$instance._upperBoundYPx = upperBoundYPx;
+			$instance._lowerBoundYPx = lowerBoundYPx;
 			return $instance;
 		}
 		
@@ -68,13 +72,13 @@ package oty
 		{
 			_rect.x -= distXPx / xfactor;
 			
-			if (_rect.y < -250)
+			if (_rect.y < -_lowerBoundYPx)
 			{
-				_rect.y = -250;
+				_rect.y = -_lowerBoundYPx;
 			}
-			else if (_rect.y > 100)
+			else if (_rect.y > _upperBoundYPx)
 			{
-				_rect.y = 100;
+				_rect.y = _upperBoundYPx;
 			}
 			else
 			{
@@ -82,7 +86,7 @@ package oty
 			}
 			
 			_bg.tileGrid = _rect;
-			//trace("_rect.y:" + _rect.y);
+			trace("_rect.y:" + _rect.y);
 		}
 	}
 

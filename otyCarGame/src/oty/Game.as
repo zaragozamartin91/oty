@@ -65,18 +65,21 @@ package oty
 				
 				var carBody:b2Body;
 				var otherBody:b2Body;
-				if (body1UserData.name == NameLibrary.CAR_BODY_NAME) {
+				if (body1UserData.name == NameLibrary.CAR_BODY_NAME)
+				{
 					carBody = body1;
 					otherBody = body2;
-				} else if (body2UserData.name == NameLibrary.CAR_BODY_NAME) {
+				}
+				else if (body2UserData.name == NameLibrary.CAR_BODY_NAME)
+				{
 					carBody = body2;
 					otherBody = body1;
 				}
 				
 				if (carBody)
 				{
-					var angleDiff = Math.abs( carBody.GetAngle() - otherBody.GetAngle() );
-					trace("angleDiff: " +  radToDeg(angleDiff) + "°" );
+					var angleDiff = Math.abs(carBody.GetAngle() - otherBody.GetAngle());
+					trace("angleDiff: " + radToDeg(angleDiff) + "°");
 					return radToDeg(angleDiff) >= 80;
 				}
 				return false;
@@ -90,7 +93,7 @@ package oty
 			
 			// ************************ BACKGROUND ************************ //
 			
-			_background = Background.buildNew(stage.stageWidth, stage.stageHeight);
+			_background = Background.buildNew(stage.stageWidth, stage.stageHeight * 2, 10, 250);
 			this.addChild(_background);
 			
 			// ************************ THE FLOOR ************************ //
@@ -142,7 +145,7 @@ package oty
 			// ************************ CAMERA ************************ //
 			
 			MainCamera.buildNew(STARLING_WORLD, stage.stageWidth, stage.stageHeight);
-			_camera = MainCamera.getInstance().setOffset(0, -30).setTarget(_car.sprite).addToWorld(this);
+			_camera = MainCamera.getInstance().setOffset(_car.sprite.width, 0).setTarget(_car.sprite).addToWorld(this);
 			
 			// ************************ LISTENERS ************************ //
 			
@@ -203,6 +206,10 @@ package oty
 		
 		private function onForwardButtonTouch(event:TouchEvent):void
 		{
+			/* EVITO LA PROPAGACION DE LOS EVENTOS TOUCH EN EL BOTON PARA EVITAR EL DESPLAZAMIENTO DE LA PANTALLA POR ARRAASTRE DEL DEDO (COMPORTAMIENTO POR DEFECTO DE STARLING) */
+			event.stopImmediatePropagation();
+			event.stopPropagation();
+			
 			//As first parameter, we passed this to the getTouch method. Thus, we’re asking the the event to return any touches that occurred on on this or its children.
 			var touchBegan:Touch = event.getTouch(this, TouchPhase.BEGAN);
 			if (touchBegan)
@@ -223,6 +230,10 @@ package oty
 		
 		private function onBackButtonTouch(event:TouchEvent):void
 		{
+			/* EVITO LA PROPAGACION DE LOS EVENTOS TOUCH EN EL BOTON PARA EVITAR EL DESPLAZAMIENTO DE LA PANTALLA POR ARRAASTRE DEL DEDO (COMPORTAMIENTO POR DEFECTO DE STARLING) */
+			event.stopImmediatePropagation();
+			event.stopPropagation();
+			
 			//As first parameter, we passed this to the getTouch method. Thus, we’re asking the the event to return any touches that occurred on on this or its children.
 			var touchBegan:Touch = event.getTouch(this, TouchPhase.BEGAN);
 			if (touchBegan)
@@ -317,7 +328,8 @@ package oty
 			return MainBox2dWorld.pixelsToMeters(p);
 		}
 		
-		public static function radToDeg(rad:Number):Number {
+		public static function radToDeg(rad:Number):Number
+		{
 			return 180 * rad / Math.PI;
 		}
 	}
