@@ -1,6 +1,7 @@
 package oty
 {
 	import flash.display.Sprite;
+	import flash.geom.Rectangle;
 	import starling.core.Starling;
 	import starling.events.Event;
 	
@@ -13,7 +14,14 @@ package oty
 		{
 			Starling.multitouchEnabled = true
 			
-			_starling = new Starling(Game, stage);
+			var screenWidth:int = stage.fullScreenWidth;
+			var screenHeight:int = stage.fullScreenHeight;
+			var viewPort:Rectangle = new Rectangle(0, 0, screenWidth, screenHeight);
+			trace("viewPort: " + viewPort);
+			
+			_starling = new Starling(Game, stage, viewPort);
+			_starling.stage.stageWidth = 800;
+			_starling.stage.stageHeight = 600;
 			
 			_starling.showStats = true;
 			/*Permite probar la funcionalidad multitouch en pcs de escritorio*/
@@ -25,22 +33,7 @@ package oty
 		}
 		
 		private function rootCreated(event:Event, root:Game):void
-		{
-			/* anchura y altura del STAGE DE FLASH */
-			stage.stageWidth = 800;
-			stage.stageHeight = 600;
-			
-			/* the stage is always stretched across the complete viewPort. What you are changing, though, is the size of the
-			 * stage’s coordinate system. That means that with a stage width of 1024, an object with an x-coordinate of 1000
-			 * will be close to the right edge of the stage; no matter if the viewPort is 512, 1024, or 2048 pixels wide.
-			 */
-			_starling.viewPort.width = stage.stageWidth;
-			_starling.viewPort.height = stage.stageHeight;
-			//The hierarchy of all display objects that will be rendered is called the display list. The Stage makes up the root of the display list
-			// anchura y altura del stage de STARLING.
-			_starling.stage.stageWidth = stage.stageWidth;
-			_starling.stage.stageHeight = stage.stageHeight;
-		
+		{			
 			root.start();
 		}
 	}

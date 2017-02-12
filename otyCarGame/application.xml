@@ -1,28 +1,31 @@
-<?xml version="1.0" encoding="utf-8" ?> 
+<?xml version="1.0" encoding="utf-8"?>
 <application xmlns="http://ns.adobe.com/air/application/23.0">
-	
-	<id>oty.otyCarGame</id> 
-	<versionNumber>1.0</versionNumber> 
-	<filename>otyCarGame</filename> 
-	
-	<name>otyCarGame</name> 
-	<description></description> 
-	<copyright></copyright> 
-	
-	<initialWindow> 
-		<title>otyCarGame</title> 
-		<content>otyCarGame.swf</content> 
-		<systemChrome>standard</systemChrome> 
-		<transparent>false</transparent> 
-		<visible>true</visible> 
-		<minimizable>true</minimizable> 
-		<maximizable>true</maximizable> 
-		<resizable>true</resizable> 
-		<renderMode>direct</renderMode>
-	</initialWindow> 
-	
-	<!-- 
+  <id>oty.otyCarGame</id>
+  <versionNumber>1.0</versionNumber>
+  <filename>otyCarGame</filename>
+  <name>otyCarGame</name>
+  <initialWindow>
+    <title>otyCarGame</title>
+    <content>otyCarGame.swf</content>
+    <systemChrome>standard</systemChrome>
+    <transparent>false</transparent>
+    <visible>true</visible>
+    <minimizable>true</minimizable>
+    <maximizable>true</maximizable>
+    <resizable>false</resizable>
+    <renderMode>direct</renderMode>
+    <aspectRatio>landscape</aspectRatio>
+    <autoOrients>true</autoOrients>
+    <depthAndStencil>true</depthAndStencil>
+    <minSize>1360 768</minSize>
+    <maxSize>1360 768</maxSize>
+    <width>1360</width>
+    <height>768</height>
+    <fullScreen>true</fullScreen>
+  </initialWindow>
+  <!-- 
 	More options:
 	http://livedocs.adobe.com/flex/3/html/File_formats_1.html#1043413
 	-->
+  
 </application>
