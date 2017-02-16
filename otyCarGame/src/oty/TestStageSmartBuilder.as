@@ -4,23 +4,47 @@ package oty
 	import starling.display.Stage;
 	
 	/**
-	 * Constructor de nivel de prueba
+	 * Constructor de nivel de prueba inteligente.
+	 * Agrega elementos al nivel a medida que
+	 *
 	 * @author martin
 	 */
-	public class TestStageBuilder
+	public class TestStageSmartBuilder
 	{
 		private var _stage:Stage;
 		private var _starlingWorld:Sprite;
 		private var _floorWidthPx:Number;
 		private var _floorHeightPx:Number;
+		private var _mainSprite:Sprite;
 		
-		public function TestStageBuilder(stage:Stage, starlingWorld:Sprite, floorWidthPx:Number, floorHeightPx:Number)
+		private var _rampManagers:Vector.<Function> = new Vector.<Function>();
+		
+		public function TestStageSmartBuilder(stage:Stage, starlingWorld:Sprite, floorWidthPx:Number, floorHeightPx:Number)
 		{
 			_stage = stage;
 			_starlingWorld = starlingWorld;
 			_floorWidthPx = floorWidthPx || stage.stageWidth * 4;
 			_floorHeightPx = floorHeightPx || 100;
 			buildStage();
+		}
+		
+		/**
+		 * Asigna el sprite principal que el constructor de nivel seguira para la construccion y destruccion del nivel.
+		 * @param	mainSprite Sprite principal a seguir.
+		 * @return this.
+		 */
+		public function withMainSprite(mainSprite:Sprite):TestStageSmartBuilder
+		{
+			_mainSprite = mainSprite;
+			return this;
+		}
+		
+		public function update():void
+		{
+			_rampManagers.forEach(function(rampManager:Function, index:int, vector:Vector.<Function>):void
+			{
+				rampManager();
+			});
 		}
 		
 		private function buildStage():void
@@ -63,14 +87,31 @@ package oty
 		
 		private function addRamp(rampPosX:Number, rampPosY:Number, rampWidth:Number, rampHeight:Number, rampAngle:Number):void
 		{
-			var ramp:StraightRamp = new StraightRamp(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle).addToWorld(_starlingWorld);
-			ramp.body.SetUserData({name: NameLibrary.RAMP_BODY_NAME});
-		}
-		
-		public function update():void
-		{
-		
+			var rampAdded:Boolean = false;
+			var rampDisposed:Boolean = false;
+			var ramp:StraightRamp = null
+			var createThresholdX:Number = rampPosX - rampWidth * 2;
+			var destroyThresholdX:Number = rampPosX + rampWidth * 2;
+			
+			_rampManagers.push(function():void
+			{
+				if (_mainSprite.x > createThresholdX && !rampAdded)
+				{
+					ramp = new StraightRamp(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle).addToWorld(_starlingWorld);
+					ramp.body.SetUserData({name: NameLibrary.RAMP_BODY_NAME});
+					rampAdded = true;
+					trace("ADDING RAMP!");
+				}
+				
+				if (_mainSprite.x > destroyThresholdX && rampAdded && !rampDisposed)
+				{
+					//_starlingWorld.removeChild(ramp.sprite, true);
+					ramp.dispose();
+					rampDisposed = true;
+					trace("DISPONSING RAMP!");
+				}
+			});
 		}
 	}
-
 }
+

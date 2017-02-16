@@ -72,6 +72,22 @@ package oty
 			return this;
 		}
 		
+		/**
+		 * Elimina el objeto rampa liberando memoria.
+		 */
+		public function dispose():void {
+			if (_rampSprite && _rampSprite.parent) {
+				/* Le pido al contenedor del sprite que lo remueva y lo elimine */
+				_rampSprite.parent.removeChild(sprite, true);
+				_rampSprite = null;
+			}
+			if (_rampBody) {
+				/* le pido a Box2d que elimine el cuerpo */
+				_box2dWorld.DestroyBody(body);
+				_rampBody = null;
+			}
+		}
+		
 		private function metersToPixels(m:Number):Number
 		{
 			return MainBox2dWorld.metersToPixels(m);

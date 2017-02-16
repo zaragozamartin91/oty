@@ -42,6 +42,8 @@ package oty
 		private var _camera:MainCamera;
 		private var _cameraPos:*;
 		
+		private var _stageBuilder:TestStageSmartBuilder;
+		
 		public function Game():void
 		{
 		}
@@ -104,10 +106,6 @@ package oty
 			_floor.addToWorld(STARLING_WORLD);
 			_floor.body.SetUserData({name: NameLibrary.FLOOR_BODY_NAME});
 			
-			// ************************ STAGE BUILD ************************ //
-			
-			var stageBuilder:TestStageBuilder = new TestStageBuilder(stage, STARLING_WORLD, _floorWidthPx, _floorHeightPx);
-			stageBuilder.buildStage();
 			
 			// ************************ CAR ************************ //
 			
@@ -115,6 +113,10 @@ package oty
 			_car.addToWorld(STARLING_WORLD);
 			_carPrevPosXPx = _car.sprite.x;
 			_carPrevPosYPx = _car.sprite.y;
+			
+			// ************************ STAGE BUILDER ************************ //
+			
+			_stageBuilder = new TestStageSmartBuilder(stage, STARLING_WORLD, _floorWidthPx, _floorHeightPx).withMainSprite(_car.sprite);
 			
 			// ************************ INTRO ANIMATION ************************ //
 			
@@ -304,6 +306,9 @@ package oty
 		// este metodo sera invocado en cada frame
 		private function updateWorld(e:Event, time:Number):void
 		{
+			/* Es necesario llamar al update del stage builder primero... */
+			_stageBuilder.update();
+			
 			_car.update(time);
 			MainBox2dWorld.getInstance().update();
 			

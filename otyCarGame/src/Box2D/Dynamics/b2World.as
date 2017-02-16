@@ -185,6 +185,7 @@ public class b2World
 		//b2Settings.b2Assert(m_lock == false);
 		if (IsLocked() == true)
 		{
+			trace("IsLocked(): " + IsLocked() == true);
 			return;
 		}
 		

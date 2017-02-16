@@ -86,7 +86,7 @@ package oty
 			}
 			
 			_bg.tileGrid = _rect;
-			trace("_rect.y:" + _rect.y);
+			//trace("_rect.y:" + _rect.y);
 		}
 	}
 
