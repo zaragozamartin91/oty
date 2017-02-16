@@ -8,7 +8,6 @@ package oty
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
-	import starling.extensions.krecha.ScrollImage;
 	import starling.textures.Texture;
 	import starling.utils.Color;
 	import starling.core.Starling;
@@ -78,7 +77,7 @@ package oty
 				
 				if (carBody)
 				{
-					var angleDiff = Math.abs(carBody.GetAngle() - otherBody.GetAngle());
+					var angleDiff:Number = Math.abs(carBody.GetAngle() - otherBody.GetAngle());
 					trace("angleDiff: " + radToDeg(angleDiff) + "°");
 					return radToDeg(angleDiff) >= 80;
 				}

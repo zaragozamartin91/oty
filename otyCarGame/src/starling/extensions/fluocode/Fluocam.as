@@ -63,7 +63,7 @@ package starling.extensions.fluocode{
 		private var toControlSw:Boolean;
 		private var dragAndZoom:Boolean;
 		
-		var fControl:FluocamControl;
+		public var fControl:FluocamControl;
 		
 					
 		private var countMaxLayers:int=5;
@@ -73,8 +73,8 @@ package starling.extensions.fluocode{
 		private var depthLayersX:Vector.<int>=new Vector.<int>(countObjectLayers);
 		private var depthLayersY:Vector.<int>=new Vector.<int>(countObjectLayers);
 		
-		public var refreshRate=1;
-		private var refreshCount=0;
+		public var refreshRate:Number=1;
+		private var refreshCount:Number=0;
 		
 		private var testTarget:Sprite=new Sprite();
 		

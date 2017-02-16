@@ -93,7 +93,7 @@ package starling.extensions.fluocode {
 			//addChildAt(targetCam,numChildren);
 		}
 
-		var lap:Timer=new Timer(accuracyDragForce,0);
+		public var lap:Timer=new Timer(accuracyDragForce,0);
 		public function getCoordinateByTime(o:Boolean):void {
 			if (o) {
 				tiempoDrag=getTimer();

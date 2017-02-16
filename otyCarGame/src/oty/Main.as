@@ -12,7 +12,7 @@ package oty
 		
 		public function Main()
 		{
-			var multitouchEnabled = false;
+			var multitouchEnabled:Boolean = false;
 			Starling.multitouchEnabled = multitouchEnabled;
 			
 			var screenWidth:int = stage.fullScreenWidth;
