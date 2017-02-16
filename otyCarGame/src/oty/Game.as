@@ -100,12 +100,7 @@ package oty
 			// ************************ THE FLOOR ************************ //
 			
 			_floorWidthPx = stage.stageWidth * 4;
-			_floorHeightPx = 100;
-			_floor = new StraightRamp(_floorWidthPx / 2, stage.stageHeight, _floorWidthPx, _floorHeightPx);
-			_floor.body.GetDefinition();
-			_floor.addToWorld(STARLING_WORLD);
-			_floor.body.SetUserData({name: NameLibrary.FLOOR_BODY_NAME});
-			
+			_floorHeightPx = 100;			
 			
 			// ************************ CAR ************************ //
 			
@@ -272,7 +267,8 @@ package oty
 		private function resetCar():void
 		{
 			var xpx:Number = _floorWidthPx / 4;
-			var ypx:Number = _floor.sprite.y - _floor.sprite.height - _car.sprite.height * 2;
+			//var ypx:Number = _floor.sprite.y - _floor.sprite.height - _car.sprite.height * 2;
+			var ypx:Number = 0;
 			_car.tweenToPosition(xpx, ypx);
 		}
 		
