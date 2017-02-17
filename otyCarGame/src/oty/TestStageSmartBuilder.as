@@ -11,7 +11,11 @@ package oty
 	 */
 	public class TestStageSmartBuilder
 	{
+		public static const UPDATE_CHECK_PERIOD:Number = 30;
+		private var _frameCount:Number = 0;
+		
 		private var _stage:Stage;
+		private var _stageWidth:Number;
 		private var _starlingWorld:Sprite;
 		
 		private var _floorWidthPx:Number;
@@ -26,6 +30,7 @@ package oty
 		public function TestStageSmartBuilder(stage:Stage, starlingWorld:Sprite, floorWidthPx:Number, floorHeightPx:Number)
 		{
 			_stage = stage;
+			_stageWidth = _stage.stageWidth;
 			_starlingWorld = starlingWorld;
 			_floorWidthPx = floorWidthPx || stage.stageWidth * 4;
 			_floorHeightPx = floorHeightPx || 100;
@@ -47,10 +52,15 @@ package oty
 		
 		public function update():void
 		{
-			_rampManagers.forEach(function(rampManager:Function, index:int, vector:Vector.<Function>):void
+			if (_frameCount % UPDATE_CHECK_PERIOD == 0)
 			{
-				rampManager();
-			});
+				_rampManagers.forEach(function(rampManager:Function, index:int, vector:Vector.<Function>):void
+				{
+					rampManager();
+				});
+			}
+			_frameCount = _frameCount > 999999 ? 0 : _frameCount + 1;
+			_frameCount;
 		}
 		
 		private function buildStage():void
@@ -89,6 +99,17 @@ package oty
 			
 			rampPosX += Math.abs(rampWidth * Math.cos(rampAngle));
 			rampPosY += Math.abs(rampWidth * Math.sin(rampAngle)) / 2;
+			rampWidth = 600;
+			rampPosX -= rampWidth / 2;
+			rampAngle = 0;
+			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
+			
+			rampPosX += rampWidth / 2;
+			rampAngle = -Math.PI / 6;
+			rampWidth = 1200;
+			rampPosX += Math.abs(rampWidth * Math.cos(rampAngle)) / 2;
+			rampPosY -= Math.abs(rampWidth * Math.sin(rampAngle)) / 2;
+			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
 		}
 		
 		private function addRampManager(rampPosX:Number, rampPosY:Number, rampWidth:Number, rampHeight:Number, rampAngle:Number):void
@@ -96,8 +117,8 @@ package oty
 			var rampAdded:Boolean = false;
 			var rampDisposed:Boolean = false;
 			var ramp:StraightRamp = null
-			var createThresholdX:Number = rampPosX - rampWidth * 2;
-			var destroyThresholdX:Number = rampPosX + rampWidth * 2;
+			var createThresholdX:Number = rampPosX - rampWidth - _stageWidth;
+			var destroyThresholdX:Number = rampPosX + rampWidth + _stageWidth;
 			var rampId:Number = _rampCount++;
 			
 			_rampManagers.push(function():void
@@ -114,6 +135,8 @@ package oty
 				{
 					ramp.dispose();
 					rampDisposed = true;
+					/* Seteo la referencia a null para permitir al GargabeCollector reclamar la memoria */
+					ramp = null;
 					trace("DISPONSING RAMP #" + rampId);
 				}
 			});

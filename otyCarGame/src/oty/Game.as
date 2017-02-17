@@ -97,11 +97,6 @@ package oty
 			_background = Background.buildNew(stage.stageWidth, stage.stageHeight * 2, 10, 250);
 			this.addChild(_background);
 			
-			// ************************ THE FLOOR ************************ //
-			
-			_floorWidthPx = stage.stageWidth * 4;
-			_floorHeightPx = 100;			
-			
 			// ************************ CAR ************************ //
 			
 			_car = new DummyCar();
@@ -111,6 +106,8 @@ package oty
 			
 			// ************************ STAGE BUILDER ************************ //
 			
+			_floorWidthPx = stage.stageWidth * 4;
+			_floorHeightPx = 100;
 			_stageBuilder = new TestStageSmartBuilder(stage, STARLING_WORLD, _floorWidthPx, _floorHeightPx).withMainSprite(_car.sprite);
 			
 			// ************************ INTRO ANIMATION ************************ //
