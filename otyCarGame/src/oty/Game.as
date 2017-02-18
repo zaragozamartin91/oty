@@ -54,7 +54,7 @@ package oty
 			//var debugSprite = new flash.display.Sprite();
 			//Starling.current.nativeOverlay.addChild(debugSprite)
 			
-			MainBox2dWorld.getInstance().debugDraw();
+			//MainBox2dWorld.getInstance().debugDraw();
 			MainBox2dWorld.getInstance().world.SetContactListener(MainBox2dContactListener.getInstance());
 			
 			// ************************ COLLISION ************************ //
@@ -153,10 +153,12 @@ package oty
 			var buttonSprite:Sprite = new Sprite();
 			buttonSprite.addChild(buttonImg);
 			
-			buttonSprite.width = stage.stageWidth * 0.15;
-			buttonSprite.height = stage.stageWidth * 0.15;
-			buttonSprite.x = stage.stageWidth - buttonSprite.width - _buttonSpacing;
-			buttonSprite.y = _buttonSpacing;
+			/* El boton sera transparente */
+			buttonSprite.alpha = 0;
+			buttonSprite.width = stage.stageWidth / 2;
+			buttonSprite.height = stage.stageHeight;
+			buttonSprite.x = stage.stageWidth / 2;
+			buttonSprite.y = 0;
 			
 			buttonSprite.addEventListener(TouchEvent.TOUCH, onForwardButtonTouch);
 			
@@ -170,11 +172,13 @@ package oty
 			buttonSprite.addChild(buttonImg);
 			buttonSprite.rotation = Math.PI;
 			
-			buttonSprite.width = stage.stageWidth * 0.15;
-			buttonSprite.height = stage.stageWidth * 0.15;
+			/* El boton sera transparente */
+			buttonSprite.alpha = 0;
+			buttonSprite.width = stage.stageWidth / 2;
+			buttonSprite.height = stage.stageHeight;
 			/* la separacion es de buttonSprite.width * 1.1 debido a que la rotacion de 180° provoca un "desplazamiento" del boton a la izquierda. */
-			buttonSprite.x = stage.stageWidth - buttonSprite.width - _buttonSpacing * 2;
-			buttonSprite.y = buttonSprite.height + _buttonSpacing;
+			buttonSprite.x = stage.stageWidth - buttonSprite.width;
+			buttonSprite.y = buttonSprite.height;
 			
 			buttonSprite.addEventListener(TouchEvent.TOUCH, onBackButtonTouch);
 			
