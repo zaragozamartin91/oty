@@ -9,7 +9,7 @@ package oty
 	 *
 	 * @author martin
 	 */
-	public class TestStageSmartBuilder
+	public class TestStageSmartBuilder implements Updatable
 	{
 		public static const UPDATE_CHECK_PERIOD:Number = 30;
 		private var _frameCount:Number = 0;
@@ -50,7 +50,7 @@ package oty
 			return this;
 		}
 		
-		public function update():void
+		public function update(time:Number = 0):void
 		{
 			if (_frameCount % UPDATE_CHECK_PERIOD == 0)
 			{
@@ -117,23 +117,25 @@ package oty
 			var rampAdded:Boolean = false;
 			var rampDisposed:Boolean = false;
 			var ramp:StraightRamp = null
-			var createThresholdX:Number = rampPosX - rampWidth - _stageWidth;
-			var destroyThresholdX:Number = rampPosX + rampWidth + _stageWidth;
+			var rampLowerBoundX:Number = rampPosX - rampWidth - _stageWidth;
+			var rampUpperBoundX:Number = rampPosX + rampWidth + _stageWidth;
 			var rampId:Number = _rampCount++;
 			
 			_rampManagers.push(function():void
 			{
-				if (_mainSprite.x > createThresholdX && !rampAdded)
+				if (_mainSprite.x > rampLowerBoundX && _mainSprite.x < rampUpperBoundX && !rampAdded)
 				{
 					ramp = new StraightRamp(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle).addToWorld(_starlingWorld);
 					ramp.body.SetUserData({name: NameLibrary.RAMP_BODY_NAME});
 					rampAdded = true;
+					rampDisposed = false;
 					trace("ADDING RAMP #" + rampId);
 				}
 				
-				if (_mainSprite.x > destroyThresholdX && rampAdded && !rampDisposed)
+				if ((_mainSprite.x > rampUpperBoundX || _mainSprite.x < rampLowerBoundX) && rampAdded && !rampDisposed)
 				{
 					ramp.dispose();
+					rampAdded = false;
 					rampDisposed = true;
 					/* Seteo la referencia a null para permitir al GargabeCollector reclamar la memoria */
 					ramp = null;

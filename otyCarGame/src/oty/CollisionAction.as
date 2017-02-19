@@ -4,7 +4,7 @@ package oty
 	
 	/**
 	 * Chequeo y accion de colision entre cuerpos de box2d.
-	 * 
+	 *
 	 * @author martin
 	 */
 	public class CollisionAction
@@ -12,6 +12,13 @@ package oty
 		private var _check:Function;
 		private var _action:Function;
 		
+		/**
+		 *
+		 * Crea una nueva accion de colision.
+		 *
+		 * @param	check Funcion de chequeo de colision. Firma: function(body1:b2Body, body2:b2Body):Boolean.
+		 * @param	action Accion a ejecutar si la condicion de colision es verdadera. Firma: function(body1:b2Body, body2:b2Body):void.
+		 */
 		public function CollisionAction(check:Function, action:Function)
 		{
 			_check = check;

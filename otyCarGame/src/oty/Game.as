@@ -44,6 +44,8 @@ package oty
 		
 		private var _stageBuilder:TestStageSmartBuilder;
 		
+		private var _gameUpdater:GameUpdater = GameUpdater.getInstance();
+		
 		public function Game():void
 		{
 		}
@@ -139,6 +141,13 @@ package oty
 			
 			MainCamera.buildNew(STARLING_WORLD, stage.stageWidth, stage.stageHeight);
 			_camera = MainCamera.getInstance().setOffset(_car.sprite.width, 0).setTarget(_car.sprite).addToWorld(this);
+			
+			// ************************ UPDATABLES ************************ //
+			
+			_gameUpdater.addPermUpdatable(_stageBuilder);
+			_gameUpdater.addPermUpdatable(_car);
+			_gameUpdater.addPermUpdatable(MainBox2dWorld.getInstance());
+			_gameUpdater.addPermUpdatable(_camera);
 			
 			// ************************ LISTENERS ************************ //
 			
@@ -270,7 +279,8 @@ package oty
 			var xpx:Number = _floorWidthPx / 4;
 			//var ypx:Number = _floor.sprite.y - _floor.sprite.height - _car.sprite.height * 2;
 			var ypx:Number = 0;
-			_car.tweenToPosition(xpx, ypx);
+			var tweenTime:Number = Math.floor( _car.sprite.x / stage.stageWidth / 3);
+			_car.tweenToPosition(xpx, ypx, tweenTime);
 		}
 		
 		private function keyPressed(e:KeyboardEvent):void
@@ -302,17 +312,8 @@ package oty
 		
 		// este metodo sera invocado en cada frame
 		private function updateWorld(e:Event, time:Number):void
-		{
-			/* Es necesario llamar al update del stage builder primero... */
-			_stageBuilder.update();
-			
-			_car.update(time);
-			MainBox2dWorld.getInstance().update();
-			
-			if (_camera)
-			{
-				_camera.update();
-			}
+		{			
+			_gameUpdater.update(time);
 			
 			_background.updateFromDist(_car.sprite.x - _carPrevPosXPx, _car.sprite.y - _carPrevPosYPx, 2, 3);
 			_carPrevPosXPx = _car.sprite.x;

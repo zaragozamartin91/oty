@@ -9,7 +9,7 @@ package oty
 	 * Camara principal.
 	 * @author martin
 	 */
-	public class MainCamera
+	public class MainCamera implements Updatable
 	{
 		private static var $instance:MainCamera;
 		private static const UNIQUE_ID:Number = Math.random();
@@ -90,15 +90,10 @@ package oty
 			return this;
 		}
 		
-		/**
-		 * Actualiza el estado de la camara.
-		 * @return this
-		 */
-		public function update():MainCamera
+		public function update(time:Number=0):void
 		{
 			_cameraCenter.x = _target.x + _offset.x;
 			_cameraCenter.y = _target.y + _offset.y;
-			return this;
 		}
 	}
 

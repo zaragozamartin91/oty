@@ -2,6 +2,10 @@ package oty
 {
 	import starling.textures.Texture;
 	
+	/**
+	 * Repositorio de texturas.
+	 * @author martin
+	 */
 	public class TextureRepository
 	{
 		private static const UNIQUE_ID:Number = Math.random();
@@ -18,7 +22,7 @@ package oty
 		public static const WoodBmp:Class;
 		[Embed(source = "img/reset-button.png")]
 		public static const ResetButtonBmp:Class;
-		[Embed(source="img/mario-background_2.gif")]
+		[Embed(source = "img/mario-background_2.gif")]
 		public static const BackgroundBmp:Class;
 		
 		private static var $instance:TextureRepository;
@@ -41,9 +45,9 @@ package oty
 		
 		public function get moveButtonTexture():Texture  { return _moveButtonTexture; }
 		
-		public function get resetButtonTexture():Texture {return _resetButtonTexture; }
+		public function get resetButtonTexture():Texture  { return _resetButtonTexture; }
 		
-		public function get backgroundTexture():Texture {return _backgroundTexture; }
+		public function get backgroundTexture():Texture  { return _backgroundTexture; }
 		
 		public static function getInstance():TextureRepository
 		{

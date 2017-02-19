@@ -7,7 +7,7 @@ package oty
 	 * Constructor de nivel de prueba
 	 * @author martin
 	 */
-	public class TestStageBuilder
+	public class TestStageBuilder implements Updatable
 	{
 		private var _stage:Stage;
 		private var _starlingWorld:Sprite;
@@ -67,7 +67,7 @@ package oty
 			ramp.body.SetUserData({name: NameLibrary.RAMP_BODY_NAME});
 		}
 		
-		public function update():void
+		public function update(time:Number = 0):void
 		{
 		
 		}

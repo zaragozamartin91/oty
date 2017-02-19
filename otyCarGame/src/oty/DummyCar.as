@@ -20,10 +20,10 @@ package oty
 	import starling.textures.Texture;
 	
 	/**
-	 * ...
+	 * Auto de prueba.
 	 * @author martin
 	 */
-	public class DummyCar
+	public class DummyCar implements Updatable
 	{
 		public static const RAXLE_DEFAULT_OFFSET_X_PX:Number = 60;
 		public static const RAXLE_DEFAULT_OFFSET_Y_PX:Number = 65;
@@ -94,7 +94,7 @@ package oty
 			_right = false;
 		}
 		
-		public function update(time:Number):void
+		public function update(time:Number = 0):void
 		{
 			if (_left)
 			{
@@ -170,7 +170,7 @@ package oty
 			carTween.rotateTo(Math.PI * 2);
 			
 			carTween.onUpdate = function():void
-			{			
+			{
 				setBodyPosition(xpx, ypx);
 				MainCamera.getInstance().update();
 			};

@@ -6,10 +6,10 @@ package oty
 	import starling.core.Starling;
 	
 	/**
-	 * ...
+	 * Mundo de box2d
 	 * @author martin
 	 */
-	public class MainBox2dWorld
+	public class MainBox2dWorld implements Updatable
 	{
 		public static const PIXELS_TO_METER:int = 30;
 		public static const WORLD_STEP:Number = 1 / 30;
@@ -40,7 +40,7 @@ package oty
 		
 		public function get world():b2World  { return _box2dWorld; }
 		
-		public function update():void
+		public function update(time:Number = 0):void
 		{
 			_box2dWorld.Step(WORLD_STEP, 10, 10);
 			_box2dWorld.ClearForces();
