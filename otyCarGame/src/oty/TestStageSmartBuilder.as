@@ -27,6 +27,13 @@ package oty
 		private var _rampCount:Number = 0;
 		private var _rampManagers:Vector.<Function> = new Vector.<Function>();
 		
+		/**
+		 * Constructor inteligente de nivel.
+		 * @param	stage Nivel / stage de starling.
+		 * @param	starlingWorld Sprite principal donde agregar los elementos.
+		 * @param	floorWidthPx Anchura del suelo.
+		 * @param	floorHeightPx Altura del suelo.
+		 */
 		public function TestStageSmartBuilder(stage:Stage, starlingWorld:Sprite, floorWidthPx:Number, floorHeightPx:Number)
 		{
 			_stage = stage;
@@ -69,13 +76,14 @@ package oty
 			var rampPosY:Number = _stage.stageHeight - _floorHeightPx / 2;
 			var rampWidth:Number = 600;
 			var rampHeight:Number = _floorHeightPx;
-			var rampAngle:Number = -Math.PI / 12;
+			var askewRampAngle = Math.PI / 12;
+			var rampAngle:Number = -askewRampAngle;
 			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
 			
 			rampPosX = _floorWidthPx;
 			rampPosY = rampPosY - rampHeight;
 			rampWidth = 1200;
-			rampAngle = -Math.PI / 12;
+			rampAngle = -askewRampAngle;
 			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
 			
 			rampAngle = Math.abs(rampAngle);
@@ -106,9 +114,43 @@ package oty
 			
 			rampPosX += rampWidth / 2;
 			rampAngle = -Math.PI / 6;
-			rampWidth = 1200;
+			rampWidth = 900;
 			rampPosX += Math.abs(rampWidth * Math.cos(rampAngle)) / 2;
 			rampPosY -= Math.abs(rampWidth * Math.sin(rampAngle)) / 2;
+			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
+			
+			rampPosX += Math.abs(rampWidth * Math.cos(rampAngle)) / 2;
+			rampPosX += rampWidth / 2;
+			rampAngle = 0;
+			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
+			
+			var spacingX = 90;
+			var spacingY = 60;
+			rampPosX += rampWidth + spacingX;
+			rampWidth = 600;
+			rampPosX -= rampWidth / 2;
+			//rampPosY += spacingY;
+			rampAngle = -askewRampAngle;
+			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
+			
+			rampPosX += rampWidth + spacingX;
+			//rampPosY += spacingY;
+			rampAngle = askewRampAngle;
+			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
+			
+			rampPosX += rampWidth + spacingX;
+			//rampPosY += spacingY;
+			rampAngle = -askewRampAngle;
+			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
+			
+			rampPosX += rampWidth + spacingX;
+			//rampPosY += spacingY;
+			rampAngle = askewRampAngle;
+			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
+			
+			rampPosX += rampWidth + spacingX;
+			//rampPosY += spacingY;
+			rampAngle = -askewRampAngle;
 			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
 		}
 		

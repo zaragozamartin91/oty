@@ -2,7 +2,7 @@ package oty
 {
 	
 	/**
-	 * Actualizador del estado del juego.
+	 * Actualizador de entidades actualizables en el tiempo.
 	 * @author martin
 	 */
 	public class GameUpdater implements Updatable
