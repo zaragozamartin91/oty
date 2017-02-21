@@ -10,7 +10,7 @@ package oty
 		private static const UNIQUE_ID:Number = Math.random();
 		private static var $instance:GameUpdater;
 		
-		private var _permUpdatables:Vector.<Updatable> = new Vector.<Updatable>();
+		private var _permUpdatables:* = {};
 		
 		public static function getInstance():GameUpdater
 		{
@@ -28,19 +28,50 @@ package oty
 		
 		/**
 		 * Agrega una entidad actualizable PERMANENTE que el actualizador del juego debe manipular en cada llamada "update".
-		 * @param	up Entidad actualizable a manipular.
+		 * @param	name	Nombre/Id de la entidad actualizable.
+		 * @param	up 		Entidad actualizable a manipular.
 		 */
-		public function addPermUpdatable(up:Updatable):void
+		public function addPermUpdatable(name:String, up:Updatable):void
 		{
-			_permUpdatables.push(up);
+			_permUpdatables[name] = up;
 		}
 		
+		/**
+		 * Remueve una entidad actualizable.
+		 * @param	name Nombre/Id de la entidad actualizable a remover.
+		 */
+		public function removePermUpdatable(name:String):void
+		{
+			if (_permUpdatables[name])
+			{
+				delete _permUpdatables[name];
+			}
+		}
+		
+		/**
+		 * Actualiza todas las entidades actualizables registradas.
+		 * @param	time Plazo de tiempo de actualizacion.
+		 */
 		public function update(time:Number = 0):void
 		{
-			_permUpdatables.forEach(function(up:Updatable, index:int, vec:Vector.<Updatable>):void
+			var up:Updatable = null;
+			for (var name:String in _permUpdatables)
 			{
+				up = _permUpdatables[name];
 				up.update(time);
-			});
+			}
 		}
+	}
+}
+
+class UpdatableData {
+	public var name:String;
+	public var updatable:oty.Updatable;
+	public var updateCondition:Function;
+	
+	public function UpdatableData(n:String, up:oty.Updatable, uc:Function = null) {
+		name = n;
+		updatable = up;
+		uc = updateCondition;
 	}
 }

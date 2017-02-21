@@ -144,10 +144,10 @@ package oty
 			
 			// ************************ UPDATABLES ************************ //
 			
-			_gameUpdater.addPermUpdatable(_stageBuilder);
-			_gameUpdater.addPermUpdatable(_car);
-			_gameUpdater.addPermUpdatable(MainBox2dWorld.getInstance());
-			_gameUpdater.addPermUpdatable(_camera);
+			_gameUpdater.addPermUpdatable(NameLibrary.STAGE_BUILDER, _stageBuilder);
+			_gameUpdater.addPermUpdatable(NameLibrary.CAR_BODY_NAME, _car);
+			_gameUpdater.addPermUpdatable(NameLibrary.BOX2D_WORLD, MainBox2dWorld.getInstance());
+			_gameUpdater.addPermUpdatable(NameLibrary.CAMERA, _camera);
 			
 			// ************************ LISTENERS ************************ //
 			
@@ -279,7 +279,7 @@ package oty
 			var xpx:Number = _floorWidthPx / 4;
 			//var ypx:Number = _floor.sprite.y - _floor.sprite.height - _car.sprite.height * 2;
 			var ypx:Number = 0;
-			var tweenTime:Number = Math.floor( _car.sprite.x / stage.stageWidth / 3);
+			var tweenTime:Number = Math.floor(_car.sprite.x / stage.stageWidth / 3);
 			_car.tweenToPosition(xpx, ypx, tweenTime);
 		}
 		
@@ -312,7 +312,7 @@ package oty
 		
 		// este metodo sera invocado en cada frame
 		private function updateWorld(e:Event, time:Number):void
-		{			
+		{
 			_gameUpdater.update(time);
 			
 			_background.updateFromDist(_car.sprite.x - _carPrevPosXPx, _car.sprite.y - _carPrevPosYPx, 2, 3);
