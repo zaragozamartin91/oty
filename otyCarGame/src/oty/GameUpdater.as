@@ -11,6 +11,7 @@ package oty
 		private static var $instance:GameUpdater;
 		
 		private var _permUpdatables:* = {};
+		private var _tempUpdatables:* = {};
 		
 		public static function getInstance():GameUpdater
 		{
@@ -33,7 +34,7 @@ package oty
 		 */
 		public function addPermUpdatable(name:String, up:Updatable):void
 		{
-			_permUpdatables[name] = up;
+			_permUpdatables[name] = new UpdatableData(name, up);
 		}
 		
 		/**
@@ -54,22 +55,24 @@ package oty
 		 */
 		public function update(time:Number = 0):void
 		{
-			var up:Updatable = null;
+			var ud:UpdatableData = null;
 			for (var name:String in _permUpdatables)
 			{
-				up = _permUpdatables[name];
-				up.update(time);
+				ud = _permUpdatables[name];
+				ud.updatable.update(time);
 			}
 		}
 	}
 }
 
-class UpdatableData {
+class UpdatableData
+{
 	public var name:String;
 	public var updatable:oty.Updatable;
 	public var updateCondition:Function;
 	
-	public function UpdatableData(n:String, up:oty.Updatable, uc:Function = null) {
+	public function UpdatableData(n:String, up:oty.Updatable, uc:Function = null)
+	{
 		name = n;
 		updatable = up;
 		uc = updateCondition;

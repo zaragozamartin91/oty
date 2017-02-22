@@ -3,7 +3,7 @@ package oty
 	
 	/**
 	 * Conjunto de constantes de nombres.
-	 * 
+	 *
 	 * @author martin
 	 */
 	public class NameLibrary
@@ -18,15 +18,13 @@ package oty
 		public static const RAMP_BODY_NAME:String = "ramp";
 		
 		public static const STAGE_BUILDER:String = "stage-builder";
-		
 		public static const BOX2D_WORLD:String = "box2d-world";
-		
 		public static const CAMERA:String = "camera";
 		
-		public function NameLibrary()
+		public static function buildName(template:String, index:int)
 		{
+			return template + "-" + index;
 		}
-	
 	}
 
 }
