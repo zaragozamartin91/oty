@@ -50,16 +50,76 @@ package oty
 		}
 		
 		/**
+		 * Remueve una entidad actualizable TEMPORAL.
+		 * @param	name Nombre/Id de la entidad actualizable TEMPORAL a remover.
+		 */
+		public function removeTempUpdatable(name:String):void
+		{
+			if (_tempUpdatables[name])
+			{
+				delete _tempUpdatables[name];
+			}
+		}
+		
+		/**
+		 * Agrega una entidad actualizable temporal que sera removida cuando la funcion de chequeo sea falsa.
+		 * @param	name			Nombre de la entidad actualizable.
+		 * @param	up				Entidad actualizable.
+		 * @param	updateCheck		Funcion de chequeo: mientras devuelva true la entidad seguira siendo actualizada.
+		 */
+		public function addTempUpdatable(name:String, up:Updatable, updateCheck:Function = null):void
+		{
+			updateCheck = updateCheck || function():Boolean
+			{
+				return false;
+			}
+			_tempUpdatables[name] = new UpdatableData(name, up, updateCheck);
+		}
+		
+		private var _updatablesToRemove:Vector.<UpdatableData> = new Vector.<UpdatableData>();
+		/* VARIABLES CON PREFIJO _ui SERAN USADAS PARA ITERACIONES DEL METODO update. ESTO SE HACE PARA
+		 * AHORRAR MEMORIA EN LA DECLARACION DE VARIABLES NUEVAS POR CADA LLAMADA A UPDATE.*/
+		private var _uiname:String;
+		private var _uipu:UpdatableData = null;
+		private var _uitu:UpdatableData = null;
+		private var _uiutr:UpdatableData = null;
+		
+		/**
 		 * Actualiza todas las entidades actualizables registradas.
 		 * @param	time Plazo de tiempo de actualizacion.
 		 */
 		public function update(time:Number = 0):void
 		{
-			var ud:UpdatableData = null;
-			for (var name:String in _permUpdatables)
+			for (_uiname in _permUpdatables)
 			{
-				ud = _permUpdatables[name];
-				ud.updatable.update(time);
+				_uipu = _permUpdatables[_uiname];
+				_uipu.updatable.update(time);
+			}
+			
+			for (_uiname in _tempUpdatables)
+			{
+				_uitu = _tempUpdatables[_uiname];
+				if (_uitu.updateCheck())
+				{
+					_uitu.updatable.update();
+				}
+				else
+				{
+					_updatablesToRemove.push(_uitu);
+				}
+			}
+			
+			while (true)
+			{
+				_uiutr = _updatablesToRemove.pop();
+				if (_uiutr)
+				{
+					removeTempUpdatable(_uiutr.name);
+				}
+				else
+				{
+					break;
+				}
 			}
 		}
 	}
@@ -69,12 +129,12 @@ class UpdatableData
 {
 	public var name:String;
 	public var updatable:oty.Updatable;
-	public var updateCondition:Function;
+	public var updateCheck:Function;
 	
 	public function UpdatableData(n:String, up:oty.Updatable, uc:Function = null)
 	{
 		name = n;
 		updatable = up;
-		uc = updateCondition;
+		uc = updateCheck;
 	}
 }

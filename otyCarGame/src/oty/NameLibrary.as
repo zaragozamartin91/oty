@@ -21,7 +21,7 @@ package oty
 		public static const BOX2D_WORLD:String = "box2d-world";
 		public static const CAMERA:String = "camera";
 		
-		public static function buildName(template:String, index:int)
+		public static function buildName(template:String, index:int):String
 		{
 			return template + "-" + index;
 		}

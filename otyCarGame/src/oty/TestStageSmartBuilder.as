@@ -76,7 +76,7 @@ package oty
 			var rampPosY:Number = _stage.stageHeight - _floorHeightPx / 2;
 			var rampWidth:Number = 600;
 			var rampHeight:Number = _floorHeightPx;
-			var askewRampAngle = Math.PI / 12;
+			var askewRampAngle:Number = Math.PI / 12;
 			var rampAngle:Number = -askewRampAngle;
 			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
 			
@@ -124,8 +124,8 @@ package oty
 			rampAngle = 0;
 			addRampManager(rampPosX, rampPosY, rampWidth, rampHeight, rampAngle);
 			
-			var spacingX = 90;
-			var spacingY = 60;
+			var spacingX:Number = 90;
+			var spacingY:Number = 60;
 			rampPosX += rampWidth + spacingX;
 			rampWidth = 600;
 			rampPosX -= rampWidth / 2;
